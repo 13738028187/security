@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>运行日志</title> #parse("sys/header.html")
+</head>
+<body>
+	<div id="rrapp">
+		<ul id="system_info_tabs" class="nav nav-tabs">
+			<li id="equip" class="active"><a href="#" data-toggle="tab"
+				onclick="changeToEqipment()">设备运行日志</a></li>
+			<li id="intelligence"><a href="#" data-toggle="tab"
+				onclick="changeToIntelligence()">智能监测终端运行日志</a></li>
+		</ul>
+		<br>
+		<div class="grid-btn">
+			<div class="form-inline">
+				
+				<div class="form-group">
+					<label>设备名称：</label> <input type="text" class="form-control"
+						maxlength="18" placeholder="不输入默认搜索所有">
+				</div>
+				<label for="name">设备状态：</label> <select class="form-control"
+					@change="">
+					<option v-for="item in equipStatus" value="item.value">{{item.value}}</option>
+				</select>
+				<div class="form-group">
+					<label for="name">开始日期：</label> <input type="text"
+						style="width: 120px;" class="form-control" id="dateParam"
+						readonly="readonly"
+						onclick="WdatePicker({lang:'zh-cn',dateFmt:'yyyy-MM-dd'})"
+						placeholder="请选择日期">
+				</div>
+				<div class="form-group">
+					<label for="name">结束日期：</label> <input type="text"
+						style="width: 120px;" class="form-control" id="dateParam"
+						readonly="readonly"
+						onclick="WdatePicker({lang:'zh-cn',dateFmt:'yyyy-MM-dd'})"
+						placeholder="请选择日期">
+				</div>
+
+				<a href="javascript:;" class="btn btn-info btn-2x"  @click=""> <span
+					class="glyphicon glyphicon-search"></span> 搜索
+				</a><br>
+				<a href="javascript:;" class="btn btn-info btn-2x" @click="" style="margin-top: 20px;margin-bottom:-10px"> <span
+					class="glyphicon glyphicon-floppy-saved"></span> 备份
+				</a> <a href="javascript:;" class="btn btn-info btn-2x" style="margin-top: 20px;margin-bottom: -10px" @click=""> <span
+					class="glyphicon glyphicon-log-out"></span> 导出报表
+				</a>
+			</div>
+		</div>
+		<br>
+
+
+		<table id="jqGrid"></table>
+		<div id="jqGridPager"></div>
+	</div>
+
+	<script src="../resources/sys/js/sys/runtimeLog.js"></script>
+</body>
+</html>

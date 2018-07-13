@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>权限分配</title>
+#parse("sys/header.html")
+</head>
+<body>
+
+<div class="modal fade" id="myModal1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    	添加角色
+                </h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    <p>角色名：</p>
+                    <input type="text" name="roleName" id="roleName" class="form-control treeBox">
+                </p>
+                <p>
+                	<p>描述：</p>
+                	<input type="text" name="description" id="description" class="form-control treeBox">
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-default" data-dismiss="modal" onclick="addRole()">确定
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
+<div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="reset()">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                   	 修改角色权限
+                </h4>
+            </div>
+            <div class="modal-body">
+            	<p>
+            		<label for="">角色权限：</label>
+            		<div id="modifyPriorityCheckbox" class="checkbox">
+
+            		</div>
+            	</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-default" data-dismiss="modal" onclick="modifyPriority()">确定
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
+<div id="rrapp">
+    <div class="grid-btn">
+
+
+        <button id="addRole" class="btn btn-info btn-2x"
+                data-toggle='modal' data-target='#myModal1'>
+            <span class="glyphicon glyphicon-plus"></span> 添加
+        </button>
+        <button id="modifyPriority" class="btn btn-info btn-2x"
+                data-toggle='modal' data-target='#myModal2'
+                onclick="openDialog()">
+            <span class="glyphicon glyphicon-edit"></span> 修改
+        </button>
+        <button id="deleteRole" class="btn btn-danger btn-2x"
+                onclick="deleteRole()">
+            <span class="glyphicon glyphicon-trash"></span> 删除
+        </button>
+
+        <p>&nbsp;</p>
+
+        <table id="jqGrid"></table>
+        <div id="jqGridPager"></div>
+    </div>
+</div>
+
+<script src="../resources/sys/js/sys/power.js"></script>
+</body>
+</html>

@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hzdy.dao.SystemRoleDao" >
+	
+  <sql id="Base_Column_List" >
+    id, avaliable, role_name, description, create_date
+  </sql>
+  
+   <select id="queryObject" resultType="com.hzdy.entity.SystemRole">
+		select 
+		<include refid="Base_Column_List" />
+		from hzdy_system_role where id = #{value}
+	</select>
+	
+	 <select id="queryList" resultType="com.hzdy.entity.SystemRole">
+		select  
+		<include refid="Base_Column_List" />
+		from hzdy_system_role 
+		order by id asc 
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+	<select id="queryTotal" resultType="int">
+		select count(*) from hzdy_system_role
+	</select>
+  
+  <delete id="deleteBatch">
+		delete from hzdy_system_role where id in 
+		<foreach item="roleId" collection="array" open="(" separator="," close=")">
+			#{roleId}
+		</foreach>
+		;
+		delete from hzdy_system_role_priority where role_id in 
+		<foreach item="roleId" collection="array" open="(" separator="," close=")">
+			#{roleId}
+		</foreach>
+		;
+		delete from hzdy_system_user_role where role_id in 
+		<foreach item="roleId" collection="array" open="(" separator="," close=")">
+			#{roleId}
+		</foreach>
+	</delete>
+  
+  
+  <insert id="save" parameterType="com.hzdy.entity.SystemRole" useGeneratedKeys="true" keyProperty="id">
+    insert into hzdy_system_role
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="avaliable != null" >
+        avaliable,
+      </if>
+      <if test="roleName != null" >
+        role_name,
+      </if>
+      <if test="description != null" >
+        description,
+      </if>
+      <if test="createDate != null" >
+        create_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="avaliable != null" >
+        #{avaliable,jdbcType=TINYINT},
+      </if>
+      <if test="roleName != null" >
+        #{roleName,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null" >
+        #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="update" parameterType="com.hzdy.entity.SystemRole" >
+    update hzdy_system_role
+    <set >
+      <if test="avaliable != null" >
+        avaliable = #{avaliable,jdbcType=TINYINT},
+      </if>
+      <if test="roleName != null" >
+        role_name = #{roleName,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null" >
+        description = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+    <select id="queryRoles" resultMap="rolemap">
+        SELECT * FROM hzdy_system_role
+        LEFT JOIN hzdy_system_role_priority ON hzdy_system_role.role_id = hzdy_system_role_priority.role_id
+        LEFT JOIN hzdy_priority ON hzdy_system_role_priority.priority_id = hzdy_priority.priority_id
+    </select>
+
+    <resultMap id="rolemap" type="com.hzdy.entity.SystemRole">
+        <id property="id" column="role_id"/>
+        <result property="avaliable" column="avaliable"/>
+        <result property="roleName" column="role_name"/>
+        <result property="description" column="description"/>
+        <result property="createDate" column="create_date"/>
+        <collection property="priorities" ofType="com.hzdy.entity.Priority">
+            <id property="priorityId" column="priority_id"/>
+            <result property="parentId" column="parent_id"/>
+            <result property="name" column="name"/>
+            <result property="url" column="url"/>
+            <result property="perms" column="perms"/>
+            <result property="nodeType" column="node_type"/>
+            <result property="status" column="status"/>
+            <result property="icon" column="icon"/>
+            <result property="showOrder" column="show_order"/>
+            <result property="description" column="description"/>
+            <result property="priorityType" column="priority_type"/>
+        </collection>
+    </resultMap>
+
+    <select id="queryIdByName" parameterType="String" resultType="int">
+        SELECT role_id FROM hzdy_system_role WHERE role_name = #{roleName}
+    </select>
+
+    <select id="queryNameById" parameterType="int" resultType="String">
+        SELECT role_name FROM hzdy_system_role WHERE role_id = #{roleId}
+    </select>
+    
+    <!-- 添加角色 -->
+    <insert id="insertRole" parameterType="com.hzdy.entity.SystemRole" useGeneratedKeys="true" keyProperty="id">
+    	insert into hzdy_system_role (role_name,description,create_date) values (#{roleName},#{description},#{createDate})
+    </insert>
+
+    <delete id="deleteRole" parameterType="Integer">
+        DELETE FROM hzdy_system_role WHERE role_id = #{param}
+    </delete>
+  
+</mapper>

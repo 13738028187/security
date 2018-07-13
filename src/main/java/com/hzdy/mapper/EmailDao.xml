@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hzdy.dao.EmailDao">
+
+	<sql id="Base_Column_List">
+		email_id,receive_email,is_delete,user_id,is_subscribe
+	</sql>
+
+	<!-- 根据权限ID 获取 权限信息 -->
+	<select id="queryObject" resultMap="emailmap">
+		select
+		<include refid="Base_Column_List" />
+		from hzdy_email where email_id = #{value}
+	</select>
+	<!-- 根据权限ID 获取 权限信息 -->
+	<select id="queryAll" resultMap="emailmap">
+		select
+		<include refid="Base_Column_List" />
+		from hzdy_email where is_delete = 0;
+	</select>
+	<!-- 根据权限ID 获取 权限信息 -->
+	<select id="queryAllByUserId"  parameterType="int" resultMap="emailmap">
+		select <include refid="Base_Column_List" />
+		from hzdy_email where is_delete = 0 and user_id=#{userId};
+	</select>
+	<!-- 获取 权限总记录数 -->
+	<select id="queryTotal" resultType="int">
+		select count(*) from
+		hzdy_email where is_delete=0
+	</select>
+
+	<!-- 删除时 只是软删除 -->
+	<update id="deleteEmailById">
+		update hzdy_email set is_delete=1 where
+		email_id=#{emailId}
+	</update>
+
+	<!-- 插入 数据 -->
+	<!-- <insert id="save" parameterType="com.hzdy.logger.entity.Email" useGeneratedKeys="true" 
+		keyProperty="email_id"> insert into hzdy_email <trim prefix="(" suffix=")" 
+		suffixOverrides=","> <if test="receiveEmail !=null"> receive_email, </if> 
+		</trim> <trim prefix="values (" suffix=")" suffixOverrides=","> <if test="receiveEmail 
+		!= null"> #{receiveEmail,jdbcType=VARCHAR}, </if> </trim> </insert> -->
+	<insert id="save" parameterType="com.hzdy.logger.entity.Email"
+		useGeneratedKeys="true" keyProperty="email_id">
+		insert into hzdy_email(receive_email,user_id)
+		<trim prefix="values(" suffix=")" suffixOverrides=",">
+			<if test="receiveEmail != null">
+				#{receiveEmail,jdbcType=VARCHAR},
+			</if>
+			<if test="userId != null">
+				#{userId,jdbcType=INTEGER},
+			</if>
+		</trim>
+	</insert>
+	<!-- 修改数据 -->
+	<update id="update" parameterType="com.hzdy.logger.entity.Email">
+		update hzdy_email
+		<set>
+			<if test="receiveEmail !=null">
+				receive_email=#{receiveEmail,jdbcType=VARCHAR},
+			</if>
+			<if test="isDelete !=null">
+				is_delete=#{isDelete,jdbcType=INTEGER},
+			</if>
+			<if test="isSubscribe !=null">
+				is_subscribe=#{isSubscribe,jdbcType=INTEGER}
+			</if>
+		</set>
+		where email_id = #{emailId,jdbcType=INTEGER}
+	</update>
+	<resultMap id="emailmap" type="com.hzdy.logger.entity.Email">
+		<id property="emailId" column="email_id" />
+		<result property="receiveEmail" column="receive_email" />
+		<result property="isDelete" column="is_delete" />
+		<result property="isSubscribe" column="is_subscribe" />
+		<result property="userId" column="user_id" />
+	</resultMap>
+</mapper>

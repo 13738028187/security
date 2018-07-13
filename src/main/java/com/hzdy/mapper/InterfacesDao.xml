@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hzdy.dao.InterfacesDao">
+
+	<resultMap type="com.hzdy.entity.Interfaces" id="InterfacesMap">
+		<id property="id" column="id"/>
+		<result property="interfaceName" column="interface_name"/>
+		<result property="securityAreaId" column="securityArea_id"/>
+	</resultMap>
+	
+	<select id="queryById" parameterType="int" resultType="com.hzdy.entity.Interfaces">
+		select * from hzdy_securityArea_interface 
+		where id=#{id,jdbcType=INTEGER}
+	</select>
+	
+	<select id="queryBySecurityAreaId" parameterType="int" resultMap="InterfacesMap">
+		select * from hzdy_securityArea_interface 
+		where securityArea_id=#{securityAreaId,jdbcType=INTEGER}
+	</select>
+	
+	<insert id="insert" parameterType="com.hzdy.entity.Interfaces">
+		insert into hzdy_securityArea_interface
+		<trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="interfaceName != null and interfaceName != ''" >
+        interface_name,
+      </if>
+      <if test="securityAreaId != null and securityAreaId != 0" >
+        securityArea_id,
+      </if>
+      
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      
+      <if test="interfaceName != null and interfaceName != ''" >
+        #{interfaceName,jdbcType=VARCHAR},
+      </if>
+      <if test="securityAreaId != null and securityAreaId != 0" >
+        #{securityAreaId,jdbcType=INTEGER},
+      </if>
+    </trim>
+	</insert>
+	
+	<update id="update" parameterType="com.hzdy.entity.Interfaces">
+	update hzdy_securityArea_interface
+	<set>
+		<if test="interfaceName != null and interfaceName != ''">
+			interface_name=#{interfaceName,jdbcType=VARCHAR},
+		</if>
+		<if test="securityAreaId != null and securityAreaId != 0">
+			securityArea_id=#{securityAreaId,jdbcType=INTEGER},
+		</if>
+		
+	</set>
+	where id = #{id,jdbcType=INTEGER}
+</update>
+	
+	<delete id="delete" parameterType="int">
+		delete from hzdy_securityArea_interface where id = #{id}
+	</delete>
+	
+	<delete id="deleteBySecurityAreaId" parameterType="int">
+		delete from hzdy_securityArea_interface where securityArea_id = #{securityAreaId}
+	</delete>
+</mapper>

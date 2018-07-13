@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>策略日志</title>
+#parse("sys/header.html")
+</head>
+<body>
+<div id="rrapp">
+	<div class="grid-btn">
+		<div class="form-inline">
+     
+        <div class="form-group" style="margin-bottom: 20px">
+			<label>源&nbsp;&nbsp;&nbsp;I&nbsp;&nbsp;&nbsp;p&nbsp;&nbsp;:</label> 
+			<input type="text" class="form-control" style="width: 180px;" maxlength="15" placeholder="不输入默认搜索所有">
+		</div>
+
+		<div class="form-group" style="margin-bottom: 20px">
+			<label>目&nbsp;&nbsp;的&nbsp;I&nbsp;p:</label> 
+			<input type="text" class="form-control" style="width: 180px;" maxlength="15" placeholder="不输入默认搜索所有">
+		</div>
+		
+		<div class="form-group" style="margin-right: 190px;margin-bottom: 20px">
+			<label>设备名称:</label> 
+			<input type="text" class="form-control" style="width: 180px;" maxlength="15" placeholder="不输入默认搜索所有">
+		</div>
+		<br>
+		
+        <div class="form-group" style="margin-bottom: 20px">
+			    <label for="name">开始日期:</label>
+			    <input type="text"style="width: 180px;" class="form-control" id="dateParam" readonly="readonly" onclick="WdatePicker({lang:'zh-cn',dateFmt:'yyyy-MM-dd'})" placeholder="请选择日期">
+		</div>
+		<div class="form-group" style="margin-bottom: 20px">
+			 	 <label for="name">结束日期:</label>
+			    <input type="text"style="width: 180px;" class="form-control" id="dateParam" readonly="readonly" onclick="WdatePicker({lang:'zh-cn',dateFmt:'yyyy-MM-dd'})" placeholder="请选择日期">
+		</div>        
+		
+		<a href="javascript:;" class="btn btn-info btn-2x" style="margin-bottom: 20px" @click="">
+            <span class="glyphicon glyphicon-search"></span> 搜索
+        </a><br>
+        <a href="javascript:;" class="btn btn-info btn-2x" @click="">
+          <span class="glyphicon glyphicon-trash"></span> 删除
+        </a>
+        <a href="javascript:;" class="btn btn-info btn-2x" @click="">
+          <span class="glyphicon glyphicon-floppy-saved"></span> 备份
+        </a>
+        <a href="javascript:;" class="btn btn-info btn-2x" @click="">
+          <span class="glyphicon glyphicon-log-out"></span> 导出报表
+        </a>
+		</div>
+	</div>
+
+    <table id="jqGrid"></table>
+    <div id="jqGridPager"></div>
+</div>
+
+<script src="../resources/sys/js/sys/strategyLog.js"></script>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>系统监测</title> #parse("sys/header.html")
+<style type="text/css">
+.widget-box.transparent {
+	border: 1px solid #e1e1e1;
+	box-shadow: none;
+}
+
+.widget-box {
+	padding: 0px, margin:3px 0;
+}
+
+.widget-box {
+	border: 1px solid #ccc;
+	border-top: 0;
+	background-color: #fff;
+}
+</style>
+</head>
+<body>
+	<div id="rrapp">
+		<div class="grid-btn"></div>
+		<section class="content-header">
+			<h2 style="margin-top: -20px">
+				系统监控 <small>Monitoring</small>
+			</h2>
+		</section>
+		<ul id="system_info_tabs" class="nav nav-tabs"
+			style="margin-bottom: 20px">
+			<li class="active"><a href="#system_actual_info_tab"
+				data-toggle="tab"> 系统监控信息</a></li>
+			<li><a href="#system_base_info_tab" data-toggle="tab">系统基本信息</a></li>
+		</ul>
+
+		<div id="system_info_TabContent" class="tab-content">
+			<div class="tab-pane fade in active" id="system_base_info_tab">
+				<table class="table">
+					<thead>
+						<tr>
+							<th>参数名</th>
+							<th>数值</th>
+						</tr>
+					</thead>
+					<tbody id="sysInfo">
+						<tr v-for="v in info">
+							<td width="100">{{v.name}}</td>
+							<td>{{v.value}}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="tab-pane fade" id="system_actual_info_tab">
+				<!-- 				<div class="col-md-7 col-sm-7 col-xs-6 col-lg-4 col">
+					<div class="widget-box transparent">
+						<div class="widget-body">
+							<div id="system_cpu_load_graph"
+								style="width: 600px; height: 300px;"></div>
+						</div>
+					</div>
+				</div> -->
+				<div class="col-md-6">
+					<div id="system_cpu_load_graph"
+						style="width: 500px; height: 300px;"></div>
+				</div>
+				<div class="col-md-4">
+					<table class="table">
+						<thead>
+							<tr>
+								<th>参数名</th>
+								<th>数值</th>
+							</tr>
+						</thead>
+						<tbody id="system_memory_info">
+							<tr v-for="v in info">
+								<td>{{v.name}}</td>
+								<td width="120">{{v.value}}</td>
+							</tr>
+							<tr>
+								<td>在线用户</td>
+								<td width="120">{{activeUser}}</td>
+							</tr>
+							<tr>
+								<td>访问次数最多IP</td>
+								<td width="120">{{mostVisitedIP}}</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="col-md-6" id="user_statistics">
+					<div id="userNumberGraph" style="width: 500px; height: 250px;"></div>
+				</div>
+			</div>
+			<div id="jqGridPager"></div>
+		</div>
+	</div>
+
+	<script>
+		$(function() {
+			$('#system_info_tabs li:eq(1) a').tab('show');
+		});
+	</script>
+	<script src="../resources/sys/js/sys/sysmoni.js"></script>
+	<script src="../resources/sys/js/sys/elasticsearch.js"></script>
+</body>
+</html>

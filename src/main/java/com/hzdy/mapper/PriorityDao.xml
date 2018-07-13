@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hzdy.dao.PriorityDao" >
+  
+  <sql id="Base_Column_List" >
+    priority_id, parent_id, name, url, perms, node_type, status, icon, 
+    show_order, description,priority_type
+  </sql>
+  
+  <!-- 根据权限ID  获取 权限信息 -->
+  <select id="queryObject" resultType="com.hzdy.entity.Priority">
+		select 
+		<include refid="Base_Column_List" />
+		from hzdy_priority where priority_id = #{value}
+  </select>
+  
+  <!-- 根据父级权限 Id 获取子权限 集合 -->
+   <select id="queryListParentId" resultType="com.hzdy.entity.Priority">
+		select 
+		<include refid="Base_Column_List" />
+		from hzdy_priority where parent_id = #{parentId} 
+		<if test="priorityType!=null">
+			AND priority_type =#{priorityType}
+		</if>
+		order by priority_id asc 
+	</select>
+	
+	<!-- 获取不是 按钮的 权限 ，也就是获取是 叶子节点的 权限 -->
+	<select id="queryNotButtonList" resultType="com.hzdy.entity.Priority">
+		select 
+		<include refid="Base_Column_List" />
+		from hzdy_priority where node_type != 2 order by priority_id asc 
+	</select>
+	
+	<!-- 分页查询 权限  -->
+	<select id="queryList" resultType="com.hzdy.entity.Priority">
+		select m.*,(select p.name from hzdy_priority p where p.priority_id = m.parent_id) as parentName 
+			from hzdy_priority m 
+		 <if test="priorityType!=null">
+		     where m.priority_type = #{priorityType}
+		 </if>	
+			order by m.priority_id asc 
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+	<!-- 获取 权限总记录数 -->
+	<select id="queryTotal" resultType="int">
+		select count(*) from hzdy_priority
+		 <if test="priorityType!=null">
+		     where priority_type = #{priorityType}
+		 </if>	
+	</select>
+   
+   <!-- 删除权限时 删除 角色权限 数据 -->
+   <delete id="deleteBatch">
+		delete from hzdy_priority where priority_id in 
+		<foreach item="menuId" collection="array" open="(" separator="," close=")">
+			#{menuId}
+		</foreach>
+		;
+		delete from hzdy_system_role_priority where priority_id in 
+		<foreach item="menuId" collection="array" open="(" separator="," close=")">
+			#{menuId}
+		</foreach>
+	</delete>
+  
+  <!-- 插入 数据 -->
+  <insert id="save" parameterType="com.hzdy.entity.Priority" >
+    insert into hzdy_priority
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="priorityId != null" >
+        priority_id,
+      </if>
+      <if test="parentId != null" >
+        parent_id,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="url != null" >
+        url,
+      </if>
+      <if test="perms != null" >
+        perms,
+      </if>
+      <if test="nodeType != null" >
+        node_type,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="icon != null" >
+        icon,
+      </if>
+      <if test="showOrder != null" >
+        show_order,
+      </if>
+      <if test="description != null" >
+        description,
+      </if>
+      <if test="priorityType != null" >
+        priority_type,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="priorityId != null" >
+        #{priorityId,jdbcType=INTEGER},
+      </if>
+      <if test="parentId != null" >
+        #{parentId,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null" >
+        #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="perms != null" >
+        #{perms,jdbcType=VARCHAR},
+      </if>
+      <if test="nodeType != null" >
+        #{nodeType,jdbcType=TINYINT},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=TINYINT},
+      </if>
+      <if test="icon != null" >
+        #{icon,jdbcType=VARCHAR},
+      </if>
+      <if test="showOrder != null" >
+        #{showOrder,jdbcType=INTEGER},
+      </if>
+      <if test="description != null" >
+        #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="priorityType != null" >
+        #{priorityType,jdbcType=TINYINT},
+      </if>
+    </trim>
+  </insert>
+  
+  <!-- 修改数据 -->
+  <update id="update" parameterType="com.hzdy.entity.Priority" >
+    update hzdy_priority
+    <set >
+      <if test="parentId != null" >
+        parent_id = #{parentId,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null" >
+        url = #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="perms != null" >
+        perms = #{perms,jdbcType=VARCHAR},
+      </if>
+      <if test="nodeType != null" >
+        node_type = #{nodeType,jdbcType=TINYINT},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=TINYINT},
+      </if>
+      <if test="icon != null" >
+        icon = #{icon,jdbcType=VARCHAR},
+      </if>
+      <if test="showOrder != null" >
+        show_order = #{showOrder,jdbcType=INTEGER},
+      </if>
+      <if test="description != null" >
+        description = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="priorityType != null" >
+        priority_type = #{priorityType,jdbcType=TINYINT},
+      </if>
+    </set>
+    where priority_id = #{priorityId,jdbcType=INTEGER}
+  </update>
+
+    <!-- 列出所有父权限 update by ywm 09.24 -->
+    <select id="queryParentPriority" resultMap="prioritymap">
+        SELECT * FROM hzdy_priority WHERE parent_id = 0
+    </select>
+
+    <resultMap id="prioritymap" type="com.hzdy.entity.Priority">
+        <id property="priorityId" column="priority_id"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="name" column="name"/>
+        <result property="url" column="url"/>
+        <result property="perms" column="perms"/>
+        <result property="nodeType" column="node_type"/>
+        <result property="status" column="status"/>
+        <result property="icon" column="icon"/>
+        <result property="showOrder" column="show_order"/>
+        <result property="description" column="description"/>
+        <result property="priorityType" column="priority_type"/>
+    </resultMap>
+
+    <!-- 列出子权限 update by ywm 09.25 -->
+    <select id="queryNodePriority" parameterType="Integer" resultMap="prioritymap">
+        SELECT priority_id FROM hzdy_priority WHERE parent_id = #{parentId}
+    </select>
+    
+    <select id="queryIdByName" parameterType="String" resultType="Integer">
+    	select priority_id from hzdy_priority where name = #{param}
+    </select>
+  
+</mapper>

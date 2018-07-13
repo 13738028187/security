@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hzdy.dao.SecurityAreaConfigDao">
+
+	<resultMap type="com.hzdy.entity.SecurityAreaConfig" id="configmap">
+		<id property="configId" column="config_id"/>
+		<result property="networkNumber" column="network_number"/>
+		<result property="securityAreaId" column="securityarea_id"/>
+	</resultMap>
+
+	<select id="querySecurityAreaConfig" parameterType="Map" resultMap="configmap">
+		select * from hzdy_securityarea_config
+		where securityarea_id = #{securityAreaId}
+		<if test="networkNumber != null and networkNumber != ''">
+			and network_number like CONCAT('%',#{networkNumber,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+	<select id="queryTotal" parameterType="Map" resultType="Integer">
+		select count(*) from hzdy_securityarea_config
+		where securityarea_id = #{securityAreaId}
+		<if test="networkNumber != null and networkNumber != ''">
+			and network_number like CONCAT('%',#{networkNumber,jdbcType=VARCHAR},'%')
+		</if>
+	</select>
+	
+	<select id="checkDuplication" parameterType="com.hzdy.entity.SecurityAreaConfig" resultType="com.hzdy.entity.SecurityAreaConfig">
+		select * from hzdy_securityarea_config where network_number = #{networkNumber}
+	</select>
+	
+	<select id="querySecurityConfigById" parameterType="Integer" resultType="com.hzdy.entity.SecurityAreaConfig">
+		select * from hzdy_securityarea_config where config_id = #{param}
+	</select>
+	
+	<insert id="insertSecurityAreaConfig" parameterType="com.hzdy.entity.SecurityAreaConfig" useGeneratedKeys="true" keyProperty="config_id">
+		insert into hzdy_securityarea_config (network_number,securityarea_id)
+		values (#{networkNumber},#{securityAreaId})
+	</insert>
+	
+	<delete id="deleteSecurityAreaConfig" parameterType="Integer">
+		delete from hzdy_securityarea_config where config_id = #{param}
+	</delete>
+	
+	<update id="updateSecurityAreaConfig" parameterType="com.hzdy.entity.SecurityAreaConfig">
+		update hzdy_securityarea_config set network_number = #{networkNumber}
+		where config_id = #{configId}
+	</update>
+	
+	<delete id="deleteConfigBySecurityAreaId" parameterType="Integer">
+		delete from hzdy_securityarea_config where securityarea_id = #{param}
+	</delete>
+	
+	<select id="querySecurityAreaIdByNum" parameterType="String" resultType="Integer">
+		select securityarea_id from hzdy_securityarea_config where network_number = #{param}
+	</select>
+
+</mapper>

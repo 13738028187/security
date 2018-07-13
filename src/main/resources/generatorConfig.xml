@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd" >
+<generatorConfiguration >
+   <classPathEntry
+        location="D:/maven/repo/mysql/mysql-connector-java/5.1.30/mysql-connector-java-5.1.30.jar" />
+  <context id="context1" >
+    <jdbcConnection driverClass="com.mysql.jdbc.Driver"
+                    connectionURL="jdbc:mysql://127.0.0.1:3306/db_shiro"
+                    userId="root" password="123" />
+    <javaModelGenerator targetPackage="com.hzdy.entity" targetProject="security/src/main/java/" />
+    <sqlMapGenerator targetPackage="com.hzdy.mapper" targetProject="security/src/main/java/" />
+    <javaClientGenerator targetPackage="com.hzdy.dao" targetProject="security/src/main/java/" type="XMLMAPPER" />
+ 
+   <table tableName="hzdy_equipment" domainObjectName="Equipment" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table> 
+  </context>
+</generatorConfiguration>

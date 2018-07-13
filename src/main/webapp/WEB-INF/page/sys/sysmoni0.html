@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>系统监测</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+	name="viewport">
+<script src="vue.min.js"></script>
+<script src="echarts.min.js"></script>
+</head>
+<body>
+	<div id="rrapp">
+		<div class="grid-btn"></div>
+		<div>
+			<table class="table">
+				<caption>系统基本信息</caption>
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>Attribute</th>
+					</tr>
+				</thead>
+				<tbody id="sysInfo">
+					<tr v-for="(value,key) in info">
+						<td>{{key}}</td>
+						<td>{{value}}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		 <div id="usinfo" style="width: 600px;height:400px;"></div>
+     <div id="javainfo" style="width: 600px;height:400px;"></div>
+		    <div id="loginfo" style="width: 600px;height:400px;"></div>
+		<!--  <table id="jqGrid"></table> -->
+		<div id="jqGridPager"></div>
+	</div>
+	<script>
+			var usinfo = echarts.init(document.getElementById('usinfo'));
+			usinfo_option = {
+			    title: {
+			        text: '今日&昨日',
+			        left: '50%',
+			        textAlign: 'center'
+			    },
+			    tooltip: {
+			        trigger: 'asix',
+			        axisPointer: {
+			            lineStyle: {
+			                color: '#ddd'
+			            }
+			        },
+			        backgroundColor: 'rgba(255,255,255,1)',
+			        padding: [5, 10],
+			        textStyle: {
+			            color: '#7588E4',
+			        },
+			        extraCssText: 'box-shadow: 0 0 5px rgba(0,0,0,0.3)'
+			    },
+			    legend: {
+			        right: 20,
+			        orient: 'vertical',
+			        data: ['今日','昨日']
+			    },
+			    xAxis: {
+			        type: 'category',
+			        data: ['00:00','2:00','4:00','6:00','8:00','10:00','12:00','14:00','16:00','18:00','20:00',"22:00"],
+			        boundaryGap: false,
+			        splitLine: {
+			            show: true,
+			            interval: 'auto',
+			            lineStyle: {
+			                color: ['#D4DFF5']
+			            }
+			        },
+			        axisTick: {
+			            show: false
+			        },
+			        axisLine: {
+			            lineStyle: {
+			                color: '#609ee9'
+			            }
+			        },
+			        axisLabel: {
+			            margin: 10,
+			            textStyle: {
+			                fontSize: 14
+			            }
+			        }
+			    },
+			    yAxis: {
+			        type: 'value',
+			        splitLine: {
+			            lineStyle: {
+			                color: ['#D4DFF5']
+			            }
+			        },
+			        axisTick: {
+			            show: false
+			        },
+			        axisLine: {
+			            lineStyle: {
+			                color: '#609ee9'
+			            }
+			        },
+			        axisLabel: {
+			            margin: 10,
+			            textStyle: {
+			                fontSize: 14
+			            }
+			        }
+			    },
+			    series: [{
+			        name: '今日',
+			        type: 'line',
+			        smooth: true,
+			        showSymbol: false,
+			        symbol: 'circle',
+			        symbolSize: 6,
+			        data: ['1200', '1400', '1008', '1411', '1026', '1288', '1300', '800', '1100', '1000', '1118', '1322'],
+			        areaStyle: {
+			            normal: {
+			                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+			                    offset: 0,
+			                    color: 'rgba(199, 237, 250,0.5)'
+			                }, {
+			                    offset: 1,
+			                    color: 'rgba(199, 237, 250,0.2)'
+			                }], false)
+			            }
+			        },
+			        itemStyle: {
+			            normal: {
+			                color: '#f7b851'
+			            }
+			        },
+			        lineStyle: {
+			            normal: {
+			                width: 3
+			            }
+			        }
+			    }, {
+			        name: '昨日',
+			        type: 'line',
+			        smooth: true,
+			        showSymbol: false,
+			        symbol: 'circle',
+			        symbolSize: 6,
+			        data: ['300', '1400', '808', '811', '626', '488', '1600', '1100', '500', '300', '1998', '822'],
+			        areaStyle: {
+			            normal: {
+			                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+			                    offset: 0,
+			                    color: 'rgba(216, 244, 247,1)'
+			                }, {
+			                    offset: 1,
+			                    color: 'rgba(216, 244, 247,1)'
+			                }], false)
+			            }
+			        },
+			        itemStyle: {
+			            normal: {
+			                color: '#58c8da'
+			            }
+			        },
+			        lineStyle: {
+			            normal: {
+			                width: 3
+			            }
+			        }
+			    }]
+			};
+usinfo.setOption(usinfo_option);
+	</script>
+	<script>
+		var javainfo = echarts.init(document.getElementById('javainfo'));
+	  javainfo_option = {
+    color: ['#ffd285', '#ff733f', '#ec4863'],
+
+    title: [{
+        text: '河南省主要城市空气质量指数',
+        left: '1%',
+        top: '6%',
+        textStyle: {
+            color: '#ffd285'
+        }
+    }, {
+        text: '污染占比分析',
+        left: '83%',
+        top: '6%',
+        textAlign: 'center',
+        textStyle: {
+            color: '#ffd285'
+        }
+    }],
+    tooltip: {
+        trigger: 'axis'
+    },
+    legend: {
+        x: 300,
+        top: '7%',
+        textStyle: {
+            color: '#ffd285',
+        },
+        data: ['郑州', '洛阳', '永城']
+    },
+    grid: {
+        left: '1%',
+        right: '35%',
+        top: '16%',
+        bottom: '6%',
+        containLabel: true
+    },
+    toolbox: {
+        "show": false,
+        feature: {
+            saveAsImage: {}
+        }
+    },
+    xAxis: {
+        type: 'category',
+        "axisLine": {
+            lineStyle: {
+                color: '#c0576d'
+            }
+        },
+        "axisTick": {
+            "show": false
+        },
+        axisLabel: {
+            textStyle: {
+                color: '#ffd285'
+            }
+        },
+        boundaryGap: false,
+        data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
+    },
+    yAxis: {
+        "axisLine": {
+            lineStyle: {
+                color: '#c0576d'
+            }
+        },
+        splitLine: {
+            show: true,
+            lineStyle: {
+                color: '#c0576d'
+            }
+        },
+        "axisTick": {
+            "show": false
+        },
+        axisLabel: {
+            textStyle: {
+                color: '#ffd285'
+            }
+        },
+        type: 'value'
+    },
+    series: [{
+        name: '郑州',
+        smooth: true,
+        type: 'line',
+        symbolSize: 8,
+      	symbol: 'circle',
+        data: [90, 50, 39, 50, 120, 82, 80]
+    }, {
+        name: '永城',
+        smooth: true,
+        type: 'line',
+        symbolSize: 8,
+      	symbol: 'circle',
+        data: [290, 200,20, 132, 15, 200, 90]
+    },
+    {
+        type: 'pie',
+        center: ['83%', '33%'],
+        radius: ['25%', '30%'],
+        label: {
+            normal: {
+                position: 'center'
+            }
+        },
+        data: [{
+            value: 335,
+            name: '污染来源分析',
+            itemStyle: {
+                normal: {
+                    color: '#ffd285'
+                }
+            },
+            label: {
+                normal: {
+                    formatter: '{d} %',
+                    textStyle: {
+                        color: '#ffd285',
+                        fontSize: 20
+
+                    }
+                }
+            }
+        }, {
+            value: 180,
+            name: '占位',
+            tooltip: {
+                show: false
+            },
+            itemStyle: {
+                normal: {
+                    color: '#b04459'
+                }
+            },
+            label: {
+                normal: {
+                    textStyle: {
+                        color: '#ffd285',
+                    },
+                    formatter: '\n汽车尾气'
+                }
+            }
+        }]
+    },
+
+
+    {
+        type: 'pie',
+        center: ['83%', '72%'],
+        radius: ['25%', '30%'],
+        label: {
+            normal: {
+                position: 'center'
+            }
+        },
+        data: [{
+            value: 435,
+            name: '污染来源分析',
+            itemStyle: {
+                normal: {
+                    color: '#ff733f'
+                }
+            },
+            label: {
+                normal: {
+                    formatter: '{d} %',
+                    textStyle: {
+                        color: '#ff733f',
+                        fontSize: 20
+
+                    }
+                }
+            }
+        }, {
+            value: 100,
+            name: '占位',
+            tooltip: {
+                show: false
+            },
+            itemStyle: {
+                normal: {
+                    color: '#b04459'
+
+
+                }
+            },
+            label: {
+                normal: {
+                    textStyle: {
+                        color: '#ff733f',
+                    },
+                    formatter: '\n工业污染'
+                }
+            }
+        }]
+    }]
+}
+javainfo.setOption(javainfo_option);
+	</script>
+
+	<script>
+		var loginfo = echarts.init(document.getElementById('loginfo'));
+  	loginfo_option = {
+    color: ['#ffd285', '#ff733f', '#ec4863'],
+
+    title: [{
+        text: '组合图',
+        left: '40%',
+        top: '6%',
+        textStyle: {
+            color: '#ffd285'
+        }
+    }],
+    tooltip: {
+        /*trigger: 'item',
+        formatter: "{a} <br/>{b} : {c}"
+        formatter: function(params) {
+            //return params.seriesType
+            //return params.name+':'+params.value
+        }*/
+    },
+    legend: {
+        x: '30%',
+        bottom: '1%',
+        textStyle: {
+            color: '#ffd285',
+        },
+        data: ['郑州', '永城', '新乡']
+    },
+    radar: {
+        // shape: 'circle',
+        indicator: [{
+            name: '销售',
+            max: 6500
+        }, {
+            name: '管理',
+            max: 16000
+        }, {
+            name: '信息技术',
+            max: 30000
+        }, {
+            name: '客服',
+            max: 38000
+        }, {
+            name: '研发',
+            max: 52000
+        }, {
+            name: '市场',
+            max: 25000
+        }],
+        center: ['83%', '85%'],
+        radius: 80
+    },
+    grid: {
+        left: '10%',
+        right: '35%',
+        top: '16%',
+        bottom: '6%',
+        containLabel: true
+    },
+    toolbox: {
+        "show": false,
+        feature: {
+            saveAsImage: {}
+        }
+    },
+    xAxis: {
+        type: 'category',
+        "axisLine": {
+            lineStyle: {
+                color: '#c0576d'
+            }
+        },
+        "axisTick": {
+            "show": false
+        },
+        axisLabel: {
+            textStyle: {
+                color: '#ffd285'
+            }
+        },
+        boundaryGap: true, //false时X轴从0开始
+        data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
+    },
+    yAxis: {
+        "axisLine": {
+            lineStyle: {
+                color: '#c0576d'
+            }
+        },
+        splitLine: {
+            show: true,
+            lineStyle: {
+                color: '#c0576d'
+            }
+        },
+        "axisTick": {
+            "show": false
+        },
+        axisLabel: {
+            textStyle: {
+                color: '#ffd285'
+            }
+        },
+        type: 'value'
+    },
+    series: [{
+            name: '郑州',
+            smooth: true,
+            type: 'bar',
+            symbolSize: 8,
+            //symbol: 'circle',
+            data: [90, 50, 39, 50, 120, 82, 80]
+        }, {
+            name: '永城',
+            smooth: true,
+            type: 'bar',
+            symbolSize: 8,
+            //symbol: 'circle',
+            data: [70, 50, 50, 87, 90, 80, 70]
+        }, {
+            name: '新乡',
+            smooth: true,
+            type: 'bar',
+            symbolSize: 8,
+            //symbol: 'circle',
+            data: [290, 200, 20, 132, 15, 200, 90]
+        }, {
+            type: 'pie',
+            center: ['83%', '20%'],
+            radius: ['15%', '20%'],
+            tooltip: {
+                trigger: 'item',
+                formatter: "{a} <br/>{b} : {c} ({d}%)"
+            },
+            label: {
+                normal: {
+                    position: 'center'
+                }
+            },
+            data: [{
+                value: 335,
+                name: '污染来源分析',
+                itemStyle: {
+                    normal: {
+                        color: '#ffd285'
+                    }
+                },
+                label: {
+                    normal: {
+                        formatter: '{d} %',
+                        textStyle: {
+                            color: '#ffd285',
+                            fontSize: 20
+
+                        }
+                    }
+                }
+            }, {
+                value: 180,
+                name: '占位',
+                tooltip: {
+                    show: false
+                },
+                itemStyle: {
+                    normal: {
+                        color: '#404A59'
+                    }
+                },
+                label: {
+                    normal: {
+                        textStyle: {
+                            color: '#ffd285',
+                        },
+                        formatter: '\n汽车尾气'
+                    }
+                }
+            }]
+        }, {
+            type: 'pie',
+            center: ['83%', '50%'],
+            radius: ['15%', '20%'],
+            name: '饼图',
+            tooltip: {
+                trigger: 'item',
+                formatter: "{a} <br/>{b} : {c} ({d}%)"
+            },
+            /* label: {
+                     normal: {
+                         textStyle: {
+                             color: '#ffd285',
+                         },
+                         formatter: "{b}: {c} ({d}%)"
+                     }
+                 },*/
+            data: [{
+                value: 335,
+                name: '直接访问',
+                itemStyle: {
+                    normal: {
+                        color: '#FF3300'
+                    }
+                }
+            }, {
+                value: 310,
+                name: '邮件营销',
+                itemStyle: {
+                    normal: {
+                        color: '#FFFF00'
+                    }
+                }
+            }, {
+                value: 234,
+                name: '联盟广告',
+                itemStyle: {
+                    normal: {
+                        color: '#00FF00'
+                    }
+                }
+            }, {
+                value: 135,
+                name: '视频广告',
+                itemStyle: {
+                    normal: {
+                        color: '#1E90FF'
+                    }
+                }
+            }, {
+                value: 1548,
+                name: '搜索引擎',
+                itemStyle: {
+                    normal: {
+                        color: '#ADFF2F'
+                    }
+                }
+            }]
+        },
+
+        {
+            type: 'radar',
+            center: ['83%', '85%'],
+            //radius: ['15%', '20%'],
+            //name: '雷达',
+            tooltip: {
+
+            },
+            data: [{
+                value: [4300, 10000, 28000, 35000, 50000, 19000],
+                name: '预算分配'
+            }, {
+                value: [5000, 14000, 28000, 31000, 42000, 21000],
+                name: '实际开销'
+            }]
+        }
+    ]
+}
+loginfo.setOption(loginfo_option);
+	</script>
+</body>
+</html>

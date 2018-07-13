@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>流量监测</title>
+#parse("sys/header.html")
+</head>
+<body>
+<div id="rrapp">
+	<div class="grid-btn">
+		<div class="form-inline">
+			<div class="form-group">
+		    <label>ip：</label>
+		    <input type="text" class="form-control" id="ip" maxlength="20" placeholder="不输入默认搜索所有">
+		  	</div>
+		  	
+		  	 <div class="form-group">
+			    <label for="name">开始日期</label>
+			    <input type="text"style="width: 120px;" class="form-control" id="dateParam" readonly="readonly" onclick="WdatePicker({lang:'zh-cn',dateFmt:'yyyy-MM-dd'})" placeholder="请选择日期">
+			  </div>
+		  		<div class="form-group">
+			    <label for="name">结束日期</label>
+			    <input type="text"style="width: 120px;" class="form-control" id="dateParam" readonly="readonly" onclick="WdatePicker({lang:'zh-cn',dateFmt:'yyyy-MM-dd'})" placeholder="请选择日期">
+			  </div>
+			<div class="form-group">
+			    <label for="name">基线类型类型</label>
+			    <select class="form-control" id="jixianTypes" @change="">
+			       <option v-for="item in jixianTypes" :value="item.key">{{item.value}}</option>
+			    </select>
+			  </div>
+        
+			<a href="javascript:;" class="btn btn-info btn-2x"  @click="">
+           	 <span class="glyphicon glyphicon-search"></span> 搜索
+        	</a>
+		</div>
+	</div>
+	
+    <table id="jqGrid"></table>
+    <div id="jqGridPager"></div>
+</div>
+
+<script src="../resources/sys/js/sys/flowmoni.js"></script>
+</body>
+</html>

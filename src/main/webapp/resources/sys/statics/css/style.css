@@ -1,0 +1,36 @@
+
+body{
+	padding:0;
+	margin:0;
+	font-family: 'Open Sans', sans-serif;
+	background:#f0f7f5;
+}
+
+.alert-close{
+	background: url('../../images/into.png') no-repeat 0px 0px;
+	cursor: pointer;
+  height: 22px;
+  width: 22px;
+  position: absolute;
+  right: 22px;
+  top: 22px;
+	-webkit-transition: color 0.2s ease-in-out;
+	-moz-transition: color 0.2s ease-in-out;
+	-o-transition: color 0.2s ease-in-out;
+	transition: color 0.2s ease-in-out;
+	  z-index: 1;
+}
+.graph {
+	/* background: #34495e; */
+	position: relative;
+	padding: 5em 0 2em 0;
+}
+
+	.graph {
+		padding: 4em 0 1em 0;
+	}
+
+	.graph {
+		padding: 3em 0 0em 0;
+	}	
+}

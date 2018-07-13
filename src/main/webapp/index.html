@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>安全统一管理平台</title>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link rel="stylesheet" href="resources/sys/statics/css/bootstrap.min.css">
+    <link rel="stylesheet" href="resources/sys/statics/css/font-awesome.min.css">
+    <link rel="stylesheet" href="resources/sys/statics/css/AdminLTE.min.css">
+    <link rel="stylesheet" href="resources/sys/statics/css/all-skins.min.css">
+    <link rel="stylesheet" href="resources/sys/statics/css/main.css">
+    <!-- websockt -->
+    <script src="resources/sys/statics/libs/sockjs.js"></script>
+    <script src="resources/sys/statics/libs/websocket2.js"></script>
+    <script src="resources/sys/statics/libs/stomp.js"></script>
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style type="text/css">
+        img {
+            display: block;
+            margin: 3px auto;
+        }
+
+        .dropdown-menu > li > a:hover {
+            background-color: #88a4aa;
+        }
+    </style>
+</head>
+
+<body class="hold-transition skin-blue sidebar-mini">
+
+<div class="wrapper" id="rrapp" v-cloak>
+    <header class="main-header">
+        <!-- 左侧导航头部的logo 文字 -->
+        <a href="javascript:void(0);" class="logo"> <span
+                class="logo-mini"><b>鼎研</b></span> <span class="logo-lg"><b>安全统一管理平台</b></span>
+        </a>
+
+        <nav class="navbar navbar-static-top" role="navigation">
+            <a href="javascript:;" class="sidebar-toggle"
+               data-toggle="offcanvas" role="button"> <span class="sr-only">展开-收缩</span>
+                <span style="margin-left: 10px;">欢迎您， {{user.userName}}！</span>
+            </a>
+
+            <div class="navbar-custom-menu">
+                <!-- 消息接受 -->
+                <ul class="nav navbar-nav">
+                    <li class="dropdown messages-menu">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <span v-if="messageNumber<=0">
+                                <i class="fa fa-bell">
+                                    <span> <span class="label label-success"></span>
+								</i>
+							</span>
+                            <span v-else-if="messageNumber>10">
+                                <i class="fa fa-battery-full">
+                                    <span> <span class="label label-success">{{messageNumber}}</span>
+                                </i>
+							</span>
+                            <span v-else>
+                                <i class="fa fa-battery-half">
+                                    <span>
+                                        <span class="label label-success">{{messageNumber}}</span>
+									</span>
+								</i>
+							</span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <span v-if="messageNumber>0">
+                                <li class="header">你收到了 {{messageNumber}}条消息</li>
+                            </span>
+                            <span v-else>
+                                <li class="header">最近没有消息</li>
+                            </span>
+                            <li>
+                                <!-- inner menu: contains the actual data -->
+                                <ul class="menu">
+                                    <li v-for="e in email" v-bind:title="e.content"><a href="#">
+                                        <div class="pull-left">
+                                            <!-- <img src="dist/img/user2-160x160.jpg" class="img-circle" alt="Sys"> -->
+                                        </div>
+                                        <h4>
+                                            {{e.subject}}
+                                            <small><i class="fa fa-clock-o"></i>
+                                                {{e.mins}} mins
+                                            </small>
+                                        </h4>
+                                        <p>{{e.content}}</p>
+                                    </a></li>
+                                </ul>
+                            </li>
+                            <li class="footer"><a href="#">See All Messages</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- 用户信息 -->
+                    <li class="dropdown user user-menu"><a href="#"
+                                                           class="dropdown-toggle" data-toggle="dropdown"
+                                                           aria-expanded="false"> <span class="hidden-xs">Alexander
+									Pierce</span>
+                    </a>
+                        <ul class="dropdown-menu">
+                            <!-- User image -->
+                            <li class="user-header">
+                                <p>
+                                    {{user.userName}} - Web 开发者
+                                    <small>注册时间: 2017</small>
+                                </p>
+                                <p v-for="m in myEmail">{{m.receiveEmail}}</p>
+                            </li>
+                            <!-- Menu Body -->
+                            <li class="user-body">
+                                <div class="row">
+                                    <div class="pull-left">
+                                        <a href="javascript:;" @click="subscribeEmail"
+                                           class="label glyphicon glyphicon-plus">订阅事件</a>
+                                    </div>
+                                    <div class="pull-right">
+                                        <a href="javascript:;" @click="addEmail"
+                                           class=" label glyphicon glyphicon-envelope">设置邮件</a>
+                                    </div>
+                                </div> <!-- /.row -->
+                            </li>
+                            <!-- Menu Footer-->
+                            <!-- 退出系统，修改密码 框 -->
+                            <li class="user-footer">
+                                <div class="pull-left">
+                                    <a href="javascript:;" @click="updatePassword"
+                                       class="btn btn-default btn-flat">修改密码</a>
+                                </div>
+                                <div class="pull-right">
+                                    <a href="javascript:;" @click="logout"
+                                       class="btn btn-default btn-flat">退出系统</a>
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
+                    <li><a href="#" data-toggle="control-sidebar"><i
+                            class="fa fa-gears"></i></a></li>
+                </ul>
+                <!-- 消息接受 -->
+            </div>
+        </nav>
+    </header>
+    <!-- 左侧导航-->
+    <aside class="main-sidebar">
+        <section class="sidebar">
+            <ul class="sidebar-menu">
+                <li class="header">导航菜单</li>
+                <!-- vue生成的菜单 -->
+                <menu-item :item="item" v-for="item in menuList"></menu-item>
+            </ul>
+        </section>
+    </aside>
+
+    <!-- 右侧部分 -->
+    <div class="content-wrapper">
+        <section class="content-header">
+            <ol class="breadcrumb" id="nav_title"
+                style="position: static; float: none;">
+                <li class="active"><i class="fa fa-home"
+                                      style="font-size: 20px; position: relative; top: 2px; left: -3px;"></i>
+                    &nbsp; 首页
+                </li>
+                <li class="active">{{navTitle}}</li>
+            </ol>
+        </section>
+
+        <!-- 主界面 -->
+        <section class="content" style="background: #fff;">
+            <iframe id="frameMain" scrolling="yes" frameborder="0"
+                    style="width: 100%; overflow: visible; background: #fff;"
+                    :src="main"></iframe>
+        </section>
+    </div>
+
+    <!-- 底部 版权 信息 -->
+    <footer class="main-footer">
+        <div class="pull-right hidden-xs">版本号 1.0.0</div>
+        Copyright &copy; 2017 北京鼎力信安技术有限公司 版权所有
+    </footer>
+
+    <!-- 设置左侧导航栏的 背景 . 这个div 必须放置在 控制sidebar最后边，会立即执行-->
+    <div class="control-sidebar-bg"></div>
+
+    <!-- 修改密码  弹出层-->
+    <div id="passwordLayer" style="display: none;">
+        <form class="form-horizontal">
+            <div class="form-group">
+                <div class="form-group">
+                    <div class="col-sm-2 control-label">账号</div>
+                    <span class="label label-success" style="vertical-align: bottom;">{{user.userName}}</span>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-2 control-label">原密码</div>
+                    <div class="col-sm-10">
+                        <input type="password" class="form-control" v-model="password"
+                               placeholder="原密码"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-2 control-label">新密码</div>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" v-model="newPassword"
+                               placeholder="新密码"/>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <!-- 添加郵件 弹出层-->
+    <div id="addEmailLayer" style="display: none;">
+        <form class="form-horizontal">
+            <div class="form-group">
+                <div class="form-group">
+                    <div class="col-sm-2 control-label">账号</div>
+                    <span class="label label-success" style="vertical-align: bottom;">{{user.userName}}</span>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-2 control-label">邮件</div>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control"
+                               v-model="myEmail[0].receiveEmail" placeholder="邮件地址"/>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <!-- 添加事件  弹出层-->
+    <div id="subscribeEmailLayer" style="display: none;">
+        <form class="form-horizontal">
+            <div class="form-group">
+                <div class="form-group">
+                    <div class="col-sm-2 control-label">账号：</div>
+                    <span class="label label-success" style="vertical-align: bottom;">{{user.userName}}</span>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-2 control-label">事件内容：</div>
+                    <div class="col-sm-5 control-label">
+                        <span>发现严重信息将会发送邮件给您</span>
+                    </div>
+                </div>
+
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="resources/sys/statics/libs/jquery.min.js"></script>
+<script src="resources/sys/statics/libs/vue.min.js"></script>
+<script src="resources/sys/statics/libs/router.js"></script>
+<script src="resources/sys/statics/libs/bootstrap.min.js"></script>
+<script src="resources/sys/statics/libs/jquery.slimscroll.min.js"></script>
+<script src="resources/sys/statics/libs/fastclick.min.js"></script>
+<script src="resources/sys/statics/libs/app.js"></script>
+<script src="resources/sys/statics/plugins/layer/layer.js"></script>
+<script src="resources/sys/js/index.js"></script>
+
+<script type="text/javascript">
+    //设置 iframe 高度
+    $("#frameMain").height($(window).height() - 160);
+
+    $(document).ready(function () {
+        //窗口 改变大小时
+        $(window).resize(function () {
+            $("#frameMain").height($(window).height() - 160);
+        });
+    });
+</script>
+</body>
+</html>

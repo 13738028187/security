@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hzdy.dao.BaselineDeviceDao">
+
+	<select id="queryDevices" resultMap="devicemap">
+		select * from hzdy_baseline_device
+	</select>
+	
+	<resultMap type="com.hzdy.entity.BaselineDevice" id="devicemap">
+		<id property="deviceId" column="device_id"/>
+		<result property="deviceName" column="device_name"/>
+		<result property="ip" column="ip"/>
+		<result property="deviceUsername" column="device_username"/>
+		<result property="devicePassword" column="device_password"/>
+		<result property="type" column="type"/>
+	</resultMap>
+	
+	<select id="queryDeviceById" parameterType="Integer" resultType="com.hzdy.entity.BaselineDevice">
+		select * from hzdy_baseline_device where device_id = #{param}
+	</select>
+	
+	<update id="updatePassword" parameterType="Map">
+		update hzdy_baseline_device set device_password = #{newPassword} where device_id = #{deviceId}
+	</update>
+	
+	<select id="queryDeviceByIP" parameterType="String" resultType="com.hzdy.entity.BaselineDevice">
+		select * from hzdy_baseline_device where ip = #{param}
+	</select>
+
+</mapper>

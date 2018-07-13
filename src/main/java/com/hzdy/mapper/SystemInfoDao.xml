@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hzdy.dao.SystemInfoDao">
+	<sql id="Base_Column_List">
+		id,start_date,available_processors,os,host,java_version,jvm_version,pid,jvm_arguments
+	</sql>
+
+	<!-- 根据权限ID 获取 权限信息 -->
+	<select id="queryAll" resultType="com.hzdy.hardware.entity.SystemInfo">
+		select
+		<include refid="Base_Column_List" />
+		from hzdy_system_info where id=(select max(id) from hzdy_system_info)
+	</select>
+	<!-- <insert id="save" parameterType="com.hzdy.system_info.SystemInfoDao" useGeneratedKeys="true" 
+		keyProperty="id"> insert system_info <trim prefix="(" suffix=")" suffixOverrides=","> 
+		<if test="id != null"> id, </if> <if test="start_date != null"> start_date, 
+		</if> <if test="available_processors != null"> available_processors, </if> 
+		<if test="os != null"> os, </if> <if test="host != null"> host, </if> <if 
+		test="java_version != null"> java_version, </if> <if test="jvm_version != 
+		null"> jvm_version, </if> <if test="pid != null"> pid, </if> <if test="jvm_arguments 
+		!= null"> jvm_arguments, </if> </trim> <trim prefix="values (" suffix=")" 
+		suffixOverrides=","> <if test="id != null"> #{id,jdbcType=INTEGER}, </if> 
+		<if test="avaliable != null"> #{avaliable,jdbcType=TINYINT}, </if> <if test="roleName 
+		!= null"> #{roleName,jdbcType=VARCHAR}, </if> <if test="description != null"> 
+		#{description,jdbcType=VARCHAR}, </if> <if test="createDate != null"> #{createDate,jdbcType=TIMESTAMP}, 
+		</if> <if test="id != null"> #{id,jdbcType=INTEGER}, </if> <if test="start_date 
+		!= null"> start_date, </if> <if test="available_processors != null"> available_processors, 
+		</if> <if test="os != null"> os, </if> <if test="host != null"> host, </if> 
+		<if test="java_version != null"> java_version, </if> <if test="jvm_version 
+		!= null"> jvm_version, </if> <if test="pid != null"> pid, </if> <if test="jvm_arguments 
+		!= null"> jvm_arguments, </if> </trim> </insert> -->
+	<insert id="save" parameterType="com.hzdy.hardware.entity.SystemInfo"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into
+		hzdy_system_info(start_date,available_processors,os,host,java_version,jvm_version,pid,jvm_arguments)values(#{startDate},#{availableProcessors},#{os},#{host},#{javaVersion},#{jvmVersion},#{pid},#{jvmArguments})
+	</insert>
+</mapper>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       	xmlns:aop="http://www.springframework.org/schema/aop"
+		xmlns:cache="http://www.springframework.org/schema/cache"
+       xsi:schemaLocation="
+       		http://www.springframework.org/schema/beans 
+      	 	http://www.springframework.org/schema/beans/spring-beans.xsd
+    	 	 http://www.springframework.org/schema/aop 
+             http://www.springframework.org/schema/aop/spring-aop.xsd     
+             http://www.springframework.org/schema/cache
+ 			http://www.springframework.org/schema/cache/spring-cache.xsd"> 
+
+ 	<!--配置缓存管理器 ,加载缓存配置文件-->
+    <bean id="ehcacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean" destroy-method="destroy">
+        <property name="configLocation" value="classpath:ehcache.xml"/>
+    </bean>
+  
+    <!-- 让spring 来管理 ehCache -->
+    <bean id="springCacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">
+        <property name="cacheManager" ref="ehcacheManager"/>
+    </bean>
+
+	<!-- echCache的唯一标示 ，自定义key生成方式 -->
+    <!-- <bean id="myCustomKeyGenerator" class="com.rainbow.shiro.cache.CustomKeyGenerator"/>
+    声明式
+    <cache:advice id="cacheAdvice" cache-manager="springCacheManager" key-generator="myCustomKeyGenerator">
+      这里的 cache 与 ehcache.xml里的 cache name一致，否则会报错的
+      <cache:caching cache="rainbowEhcache">
+      	 当执行 查询方法时，先查询数据库，在查询缓存数据，再次查询时会直接查询缓存
+         <cache:cacheable method="find*" />
+         <cache:cacheable method="select*" />
+         <cache:cacheable method="get*" />
+         <cache:cacheable method="query*" />
+         <cache:cacheable method="fetch*" />
+         调用 增删 修改 方法时，会自动清除掉 缓存，重新加载
+         <cache:cache-evict method="add*" all-entries="true"/>
+         <cache:cache-evict method="save*" all-entries="true"/>
+         <cache:cache-evict method="insert*" all-entries="true"/>
+         <cache:cache-evict method="update*" all-entries="true"/>
+         <cache:cache-evict method="modify*" all-entries="true"/>
+         <cache:cache-evict method="delete*" all-entries="true"/>
+         <cache:cache-evict method="edit*" all-entries="true"/>
+      </cache:caching>
+   </cache:advice> 
+    
+   使用spring AOP 来实现 缓存 EhCache    
+   <aop:config>
+      <aop:advisor advice-ref="cacheAdvice" pointcut="execution(* com.rainbow.service.impl.*.*(..))"/>
+   </aop:config> -->  
+
+</beans>

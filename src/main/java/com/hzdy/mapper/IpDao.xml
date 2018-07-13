@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hzdy.dao.IpDao">
+
+	<sql id="Base_Column_List">
+		id,ip,subnet_ip,o_id
+	</sql>
+
+	<!-- 根据权限ID 获取 权限信息 -->
+	<select id="queryObject" resultMap="ipmap">
+		select
+		<include refid="Base_Column_List" />
+		from hzdy_ip where id = #{value}
+	</select>
+	<!-- 根据权限ID 获取 权限信息 -->
+	<select id="queryAll" resultMap="ipmap">
+		select
+		<include refid="Base_Column_List" />
+		from hzdy_ip;
+	</select>
+	<!-- 获取 权限总记录数 -->
+	<select id="queryTotal" resultType="int">
+		select count(*) from
+		hzdy_ip
+	</select>
+	<delete id="delete" parameterType="int">
+		delete from hzdy_ip where
+		id =
+		#{id}
+	</delete>
+	<!-- 插入 数据 -->
+	<insert id="save" parameterType="com.hzdy.discovery.Ip"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into hzdy_ip(ip,subnet_ip,o_id)values(#{ip,jdbcType=VARCHAR},#{subnetIp,jdbcType=VARCHAR},#{oId,jdbcType=VARCHAR})
+<!-- 		<trim prefix="values(" suffix=")" suffixOverrides=",">
+			<if test="ip != null">
+				#{ip,jdbcType=VARCHAR},
+			</if>
+			<if test="subnetIp != null">
+				#{subnetIp,jdbcType=VARCHAR},
+			</if>
+			<if test="equipmentId != null">
+				#{equipmentId,jdbcType=INTEGER},
+			</if>
+		</trim> -->
+	</insert>
+	<!-- 修改数据 -->
+	<update id="update" parameterType="com.hzdy.discovery.Ip">
+		update hzdy_ip
+		<set>
+			<if test="ip != null">
+				#{ip,jdbcType=VARCHAR},
+			</if>
+			<if test="subnetIp != null">
+				#{subnetIp,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	<resultMap id="ipmap" type="com.hzdy.discovery.Ip">
+		<id property="id" column="id" />
+		<result property="ip" column="ip" />
+		<result property="subnetIp" column="subnet_ip" />
+		<result property="oId" column="o_id" />
+	</resultMap>
+</mapper>

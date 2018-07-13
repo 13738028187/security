@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>设备管理</title>
+#parse("sys/header.html")
+</head>
+<body>
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+					&times;
+				</button>
+				<h4 class="modal-title" id="myModalLabel">
+					设备详细信息
+				</h4>
+			</div>
+			<div class="modal-body">
+				<p>ID：</p><input v-model="equipment.apparatus_id" type="text" class="form-control treeBox" disabled>
+				<p>编号：</p><input v-model="equipment.number" type="text" class="form-control treeBox" disabled>
+				<p>名称：</p><input v-model="equipment.name" type="text" class="form-control treeBox" disabled>
+				<p>类型：</p><input v-model="equipment.type" type="text" class="form-control treeBox" disabled>
+				<p>资金：</p><input v-model="equipment.money" type="text" class="form-control treeBox" disabled>
+				<p>负责人：</p><input v-model="equipment.principal" type="text" class="form-control treeBox" disabled>
+			</div>
+			<div class="modal-footer">
+				<button class="btn btn-default" data-dismiss="modal">确认
+				</button>
+			</div>
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal -->
+</div>
+
+<div id="rrapp">
+	<div class="grid-btn">
+      <div class="form-inline" role="form">
+      	<a href="javascript:;" class="btn btn-info btn-2x"
+					@click=""> <span class="glyphicon glyphicon-plus"></span> 新增
+				
+				</a>
+				<a href="javascript:;" class="btn btn-danger btn-2x"
+					@click=""> <span class="glyphicon glyphicon-trash"></span> 删除
+				</a>
+      	<div class="form-group">
+      		<label for="name">设备名称：</label>
+      		<input id="equipmentName" type="text" placeholder="请输入设备名称" class="form-control">
+      		&nbsp;&nbsp;&nbsp;
+			<label for="name">所属网络：</label>
+			<select class="form-control" id="networks" @change="" name="network">
+				<option v-for="item in networks" v-bind:value="item.value">{{item.value}}</option>
+			</select>
+			&nbsp;&nbsp;&nbsp;
+			<label for="name">设备类型：</label>
+			<select class="form-control" id="equipTypes" @change="" name="type">
+				<option v-for="item in equipTypes" v-bind:value="item.value">{{item.value}}</option>
+			</select>
+			&nbsp;&nbsp;&nbsp;
+			<label for="name">在线状态：</label>
+			<select class="form-control" id="onlineStatus" @change="" name="onlineStatus">
+				<option v-for="item in onlineStatus" v-bind:value="item.value">{{item.value}}</option>
+			</select>
+			&nbsp;&nbsp;&nbsp;
+		</div>
+		
+		<button id="search" class="btn btn-info btn-2x">
+            <span class="glyphicon glyphicon-search"></span> 搜索
+        </button>
+  		
+  		 <!-- <button type="button" href="#" class="btn btn-primary" @click="">设备升级</button> -->
+		
+		<!-- <button type="button" href="#" class="btn btn-primary" @click="">划分安全域</button> -->
+		
+		</div>
+	
+	</div>
+    
+    	<table id="jqGrid"></table>
+    	<div id="jqGridPager"></div>
+    
+</div>
+
+<script src="../resources/sys/js/sys/equipmanager.js"></script>
+</body>
+</html>

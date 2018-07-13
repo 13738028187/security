@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hzdy.dao.RuleDao">
+
+	<resultMap type="com.hzdy.entity.Rule" id="RuleMap">
+		<id property="id" column="id" />
+		<result property="ruleName" column="rule_name" />
+		<result property="originIp" column="origin_Ip" />
+		<result property="goalIp" column="goal_Ip" />
+		<result property="originIpMask" column="origin_Ip_mask" />
+		<result property="goalIpMask" column="goal_Ip_mask" />
+		<result property="protocol" column="protocol" />
+	</resultMap>
+
+	<select id="queryList" parameterType="Map" resultMap="RuleMap">
+		select * from hzdy_rule
+
+		<trim prefix="WHERE" prefixOverrides="AND|OR">
+			<if test="ruleName !=null and ruleName != ''">
+				AND rule_name like
+				CONCAT('%',#{ruleName,jdbcType=VARCHAR},'%')
+			</if>
+		</trim>
+
+		order by id desc
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+
+	</select>
+
+	<select id="queryTotal" parameterType="Map" resultType="int">
+		select count(*) from hzdy_rule
+
+		<trim prefix="WHERE" prefixOverrides="AND|OR">
+			<if test="ruleName !=null and ruleName != ''">
+				AND rule_name like
+				CONCAT('%',#{ruleName,jdbcType=VARCHAR},'%')
+			</if>
+		</trim>
+
+	</select>
+
+	<select id="queryRuleById" parameterType="Integer" resultType="com.hzdy.entity.Rule">
+		select * from hzdy_rule where id = #{id}
+	</select>
+
+	<delete id="delete" parameterType="int">
+		delete from hzdy_rule where id
+		= #{id}
+	</delete>
+
+	<insert id="insert" parameterType="com.hzdy.entity.Rule">
+		insert into hzdy_rule
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="ruleName !=null and ruleName != ''">
+				rule_name,
+			</if>
+			<if test="originIp != null and originIp != ''">
+				origin_Ip,
+			</if>
+			<if test="goalIp != null and goalIp != ''">
+				goal_Ip,
+			</if>
+			<if test="originIpMask != null and originIpMask != ''">
+				origin_Ip_mask,
+			</if>
+			<if test="goalIpMask != null and goalIpMask != ''">
+				goal_Ip_mask,
+			</if>
+			<if test="protocol != null and protocol != ''">
+				protocol
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+
+			<if test="ruleName !=null and ruleName != ''">
+				#{ruleName,jdbcType=VARCHAR},
+			</if>
+			<if test="originIp != null and originIp != ''">
+				#{originIp,jdbcType=VARCHAR},
+			</if>
+			<if test="goalIp != null and goalIp != ''">
+				#{goalIp,jdbcType=VARCHAR},
+			</if>
+			<if test="originIpMask != null and originIpMask != ''">
+				#{originIpMask,jdbcType=VARCHAR},
+			</if>
+			<if test="goalIpMask != null and goalIpMask != ''">
+				#{goalIpMask,jdbcType=VARCHAR},
+			</if>
+			<if test="protocol != null and protocol != ''">
+				#{protocol,jdbcType=VARCHAR}
+			</if>
+		</trim>
+	</insert>
+
+	<update id="update" parameterType="com.hzdy.entity.Rule">
+		update hzdy_rule
+		<set>
+			<if test="ruleName !=null and ruleName != ''">
+				rule_name=#{ruleName,jdbcType=VARCHAR},
+			</if>
+			<if test="originIp != null and originIp != ''">
+				origin_Ip=#{originIp,jdbcType=VARCHAR},
+			</if>
+			<if test="goalIp != null and goalIp != ''">
+				goal_Ip=#{goalIp,jdbcType=VARCHAR},
+			</if>
+			<if test="originIpMask != null and originIpMask != ''">
+				origin_Ip_mask=#{originIpMask,jdbcType=VARCHAR},
+			</if>
+			<if test="goalIpMask != null and goalIpMask != ''">
+				goal_Ip_mask=#{goalIpMask,jdbcType=VARCHAR},
+			</if>
+			<if test="protocol != null and protocol != ''">
+				protocol=#{protocol,jdbcType=VARCHAR}
+			</if>
+		</set>
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+</mapper>

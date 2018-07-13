@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>告警日志</title>
+#parse("sys/header.html")
+</head>
+<body>
+<div id="rrapp">
+	<div class="grid-btn">
+		<div class="form-inline">
+		
+        
+        <div class="form-group">
+			    <label for="name">开始日期：</label>
+			    <input type="text"style="width: 120px;" class="form-control" id="dateParam1" readonly="readonly" onclick="WdatePicker({lang:'zh-cn',dateFmt:'yyyy-MM-dd',maxDate: '%y-%M-%d'})" placeholder="请选择日期">
+		</div>
+		<div class="form-group">
+			 	 <label for="name">结束日期：</label>
+			    <input type="text"style="width: 120px;" class="form-control" id="dateParam2" readonly="readonly" onclick="WdatePicker({lang:'zh-cn',dateFmt:'yyyy-MM-dd',maxDate: '%y-%M-%d'})" placeholder="请选择日期">
+		</div>
+        
+		<a href="javascript:;" class="btn btn-info btn-2x"  @click="show">
+            <span class="glyphicon glyphicon-search"></span> 搜索
+        </a>
+        <a href="javascript:;" class="btn btn-danger btn-2x" @click="">
+          <span class="glyphicon glyphicon-trash"></span> 删除
+        </a>
+        </div>
+	</div>
+    <table id="jqGrid"></table>
+    <div id="jqGridPager"></div>
+</div>
+
+<script src="../resources/sys/js/sys/warnlog.js"></script>
+</body>
+</html>

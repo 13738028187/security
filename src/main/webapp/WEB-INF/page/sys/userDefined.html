@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>用户自定义</title>
+#parse("sys/header.html")
+</head>
+<body>
+<div id="rrapp">	
+	<ul id="system_info_tabs" class="nav nav-tabs">
+		<li id="OPC" class="active"><a href="#opc" data-toggle="tab" onclick="changeToOPC()">OPC协议</a></li>
+		<!-- <li id="S7"><a href="#s7" data-toggle="tab" onclick="changeToS7()">S7协议</a></li> -->
+		<li id="Modbus"><a href="#modbus" data-toggle="tab" onclick="changeToMODBUS()">MODBUS协议</a></li>
+	</ul>
+	
+	<p></p>
+	
+	<div id="myTabContent" class="tab-content" style="margin-top: 20px">
+			<div class="tab-pane fade in active" id="opc">
+				<div class="grid-btn">
+					<div class="form-inline" role="form">
+
+						<button id="" class="btn btn-info btn-2x"
+							@click="openOPCInsert">
+							<span class="glyphicon glyphicon-plus"></span> 新增
+						</button>
+						<button id="" class="btn btn-danger btn-2x" @click="deleteOPCrule">
+							<span class="glyphicon glyphicon-trash"></span> 删除
+						</button>
+
+						<div class="form-group">
+							<label>规则名称：</label> <input type="text" class="form-control"
+							id="opcRuleName" maxlength="10" placeholder="不输入默认搜索所有">
+						</div>
+
+						<button id="" class="btn btn-info btn-2x" @click="searchOPCrule">
+							<span class="glyphicon glyphicon-search"></span> 搜索
+						</button>
+
+				</div>
+			</div>
+    		
+    		<div class="modal fade" id="opcModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    		<div class="modal-dialog">
+        		<div class="modal-content">
+            		<div class="modal-header">
+                		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    		&times;
+                		</button>
+                		<h4 class="modal-title" id="myModalLabel">
+                    		{{title}}
+                		</h4>
+            		</div>
+           			<div class="modal-body">
+           				<p>
+                    		<label for="">规则名称：</label>
+                    		<input type="text" id="addOPCmodalRuleName" class="form-control treeBox" v-model="opcRule.ruleName">
+                		</p>
+                		<p>
+                    		<label for="">源IP：</label>
+                    		<input type="text" id="addOPCmodalOriginIP" class="form-control treeBox" v-model="opcRule.originIP">
+                		</p>
+                		<p>
+                    		<label for="">目的IP：</label>
+                    		<input type="text" id="addOPCmodalGoalIP" class="form-control treeBox" v-model="opcRule.goalIP">
+                		</p>
+                		<p>
+                    		<label for="">传输层协议：</label>
+                    		<input type="text" id="addOPCmodalProtocol" value="TCP" class="form-control" placeholder="TCP" disabled v-model="opcRule.protocol">
+                		</p>
+                		<p>
+                    		<label for="">接口：</label>
+							<select id="addOPCmodalInterfaces" class="form-control" v-model="opcRule.interfaces">
+								<option value="">请选择</option>
+								<option value="IOPCAsynclO3">IOPCAsynclO3</option>
+								<option value="IOPCServerList">IOPCServerList</option>
+								<option value="IOPCHDA_Server">IOPCHDA_Server</option>
+								<option value="IOPCHDA_Browser">IOPCHDA_Browser</option>
+								<option value="IOPCHDA_SyncReader">IOPCHDA_SyncReader</option>
+							</select>
+                		</p>
+                		<p>
+                    		<label for="name">方法：</label>
+							<select id="addOPCmodalMethod" class="form-control" v-model="opcRule.method">
+								<option value="">请选择</option>
+								<option value="ReaderMaxAge">ReaderMaxAge</option>
+								<option value="WriterVQT">WriterVQT</option>
+								<option value="RefreshMaxAge">RefreshMaxAge</option>
+							</select>
+                		</p>
+            		</div>
+            		<div class="modal-footer">
+            			<button class="btn btn-default" @click="resetOPC">重置
+                		</button>
+                		<button class="btn btn-default" @click="insertOrUpdateOPC">确定
+                		</button>
+            		</div>
+        		</div><!-- /.modal-content -->
+    		</div><!-- /.modal -->
+			</div>
+    	</div>
+   		<div class="tab-pane fade" id="s7">
+      		<div class="grid-btn">
+					<div class="form-inline" role="form">
+
+						<button id="" class="btn btn-info btn-2x"
+							@click="openS7Insert">
+							<span class="glyphicon glyphicon-plus"></span> 新增
+						</button>
+						<button id="" class="btn btn-danger btn-2x" @click="deleteS7rule">
+							<span class="glyphicon glyphicon-trash"></span> 删除
+						</button>
+
+						<div class="form-group">
+							<label>规则名称：</label> <input type="text" class="form-control"
+							id="s7RuleName" maxlength="10" placeholder="不输入默认搜索所有">
+						</div>
+
+						<button id="" class="btn btn-info btn-2x" @click="searchS7rule">
+							<span class="glyphicon glyphicon-search"></span> 搜索
+						</button>
+
+				</div>
+			</div>
+    		
+    		<div class="modal fade" id="s7Modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    		<div class="modal-dialog">
+        		<div class="modal-content">
+            		<div class="modal-header">
+                		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    		&times;
+                		</button>
+                		<h4 class="modal-title" id="myModalLabel">
+                    		{{title}}
+                		</h4>
+            		</div>
+           			<div class="modal-body">
+           				<p>
+                    		<label for="">规则名称：</label>
+                    		<input type="text" id="addS7modalRuleName" class="form-control treeBox" v-model="s7Rule.ruleName">
+                		</p>
+                		<p>
+                    		<label for="">源IP：</label>
+                    		<input type="text" id="addS7modalOriginIP" class="form-control treeBox" v-model="s7Rule.originIP">
+                		</p>
+                		<p>
+                    		<label for="">目的IP：</label>
+                    		<input type="text" id="addS7modalGoalIP" class="form-control treeBox" v-model="s7Rule.goalIP">
+                		</p>
+                		<p>
+                    		<label for="">源IP掩码：</label>
+                    		<input type="text" id="addS7modalOriginIPmac" class="form-control treeBox" v-model="s7Rule.originIPmac">
+                		</p>
+                		<p>
+                    		<label for="">目的IP掩码：</label>
+                    		<input type="text" id="addS7modalGoalIPmac" class="form-control treeBox" v-model="s7Rule.goalIPmac">
+                		</p>
+                		<p>
+                    		<label for="">读写属性：</label>
+							<select id="addS7modalReadwriteAttr" class="form-control" v-model="s7Rule.readwriteAttr">
+								<option value="">请选择</option>
+								<option value="read">读</option>
+								<option value="write">写</option>
+							</select>
+                		</p>
+                		<p>
+                    		<label for="name">寄存器区：</label>
+							<select id="addS7modalRegisterArea" class="form-control" v-model="s7Rule.registerArea">
+								<option value="">请选择</option>
+								<option value="DB">DB区</option>
+								<option value="C">C区</option>
+								<option value="T">T区</option>
+								<option value="Q">Q区</option>
+								<option value="I">I区</option>
+								<option value="P">P区</option>
+							</select>
+                		</p>
+                		<p>
+                    		<label for="">DB区区号：</label>
+                    		<input type="text" id="addS7modalDBAreaNum" class="form-control treeBox" v-model="s7Rule.dbAreaNum">
+                		</p>
+                		<p>
+                    		<label for="name">点类型：</label>
+							<select id="addS7modalPointType" class="form-control" v-model="s7Rule.pointType">
+								<option value="">请选择</option>
+								<option value="S7WLBit">1S7WLBit</option>
+								<option value="S7WLByte">S7WLByte</option>
+								<option value="S7WLChar">S7WLChar</option>
+								<option value="S7WLWord">S7WLWord</option>
+								<option value="S7WLInt">S7WLInt</option>
+								<option value="S7WLDWord">S7WLDWord</option>
+							</select>
+                		</p>
+                		<p>
+                    		<label for="">起始地址：</label>
+                    		<input type="text" id="addS7modalInitialAddr" class="form-control treeBox" v-model="s7Rule.initialAddr">
+                		</p>
+                		<p>
+                    		<label for="">结束地址：</label>
+                    		<input type="text" id="addS7modalEndAddr" class="form-control treeBox" v-model="s7Rule.endAddr">
+                		</p>
+                		<p>
+                    		<label for="">传输层协议：</label>
+                    		<input type="text" id="addS7modalProtocol" value="TCP" class="form-control" placeholder="TCP" disabled v-model="s7Rule.protocol">
+                		</p>
+            		</div>
+            		<div class="modal-footer">
+            			<button class="btn btn-default" @click="resetS7">重置
+                		</button>
+                		<button class="btn btn-default" @click="insertOrUpdateS7">确定
+                		</button>
+            		</div>
+        		</div><!-- /.modal-content -->
+    		</div><!-- /.modal -->
+			</div>
+   		</div>
+   		<div class="tab-pane fade" id="modbus">
+      		<div class="grid-btn">
+					<div class="form-inline" role="form">
+
+						<button id="" class="btn btn-info btn-2x"
+							@click="openMODBUSInsert">
+							<span class="glyphicon glyphicon-plus"></span> 新增
+						</button>
+						<button id="" class="btn btn-danger btn-2x" @click="deleteMODBUSrule">
+							<span class="glyphicon glyphicon-trash"></span> 删除
+						</button>
+
+						<div class="form-group">
+							<label>规则名称：</label> <input type="text" class="form-control"
+							id="modbusRuleName" maxlength="10" placeholder="不输入默认搜索所有">
+						</div>
+
+						<button id="" class="btn btn-info btn-2x" @click="searchMODBUSrule">
+							<span class="glyphicon glyphicon-search"></span> 搜索
+						</button>
+
+				</div>
+			</div>
+			
+			<div class="modal fade" id="modbusModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    		<div class="modal-dialog">
+        		<div class="modal-content">
+            		<div class="modal-header">
+                		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    		&times;
+                		</button>
+                		<h4 class="modal-title" id="myModalLabel">
+                    		{{title}}
+                		</h4>
+            		</div>
+           			<div class="modal-body">
+           				<p>
+                    		<label for="">规则名称：</label>
+                    		<input type="text" id="modifyMODBUSmodalRuleName" class="form-control treeBox" v-model="modbusRule.ruleName">
+                		</p>
+                		<p>
+                    		<label for="">源IP：</label>
+                    		<input type="text" id="modifyMODBUSmodalOriginIP" class="form-control treeBox" v-model="modbusRule.originIP">
+                		</p>
+                		<p>
+                    		<label for="">目的IP：</label>
+                    		<input type="text" id="modifyMODBUSmodalGoalIP" class="form-control treeBox" v-model="modbusRule.goalIP">
+                		</p>
+                		<p>
+                    		<label for="">源IP掩码：</label>
+                    		<input type="text" id="modifyMODBUSmodalOriginIPmac" class="form-control treeBox" v-model="modbusRule.originIPmac">
+                		</p>
+                		<p>
+                    		<label for="">目的IP掩码：</label>
+                    		<input type="text" id="modifyMODBUSmodalGoalIPmac" class="form-control treeBox" v-model="modbusRule.goalIPmac">
+                		</p>
+                		<p>
+                    		<label for="">功能码：</label>
+							<select id="modifyMODBUSmodalFunctionCode" class="form-control" v-model="modbusRule.functionCode">
+								<option value="">请选择</option>
+								<option value="01 Read Coils">01 Read Coils</option>
+								<option value="02 Read Discrete Inputs">02 Read Discrete Inputs</option>
+								<option value="03 Read Holding Registers">03 Read Holding Registers</option>
+								<option value="04 Read Input Registers">04 Read Input Registers</option>
+								<option value="05 Write Single Register">05 Write Single Register</option>
+								<option value="06 Write Multiple Coils">06 Write Multiple Coils</option>
+							</select>
+                		</p>
+                		<p>
+                    		<label for="">起始地址：</label>
+                    		<input type="text" id="modifyMODBUSmodalInitialAddr" class="form-control treeBox" v-model="modbusRule.initialAddr">
+                		</p>
+                		<p>
+                    		<label for="">结束地址：</label>
+                    		<input type="text" id="modifyMODBUSmodalEndAddr" class="form-control treeBox" v-model="modbusRule.endAddr">
+                		</p>
+                		<p>
+                    		<label for="">传输层协议：</label>
+                    		<input type="text" id="modifyMODBUSmodalProtocol" value="TCP" class="form-control" placeholder="TCP" disabled v-model="modbusRule.protocol">
+                		</p>
+            		</div>
+            		<div class="modal-footer">
+            			<button class="btn btn-default" @click="resetMODBUS">重置
+                		</button>
+                		<button class="btn btn-default" @click="insertOrUpdateMODBUS">确定
+                		</button>
+            		</div>
+        		</div><!-- /.modal-content -->
+    		</div><!-- /.modal -->
+			</div>
+   		</div>
+	
+    <table id="jqGrid"></table>
+    <div id="jqGridPager"></div>
+	</div>
+</div>
+
+<script src="../resources/sys/js/sys/userDefined.js"></script>
+</body>
+</html>

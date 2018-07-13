@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>日志管理</title> 
+#parse("sys/header.html")
+</head>
+<body>
+	<div id="rrapp">
+		<ul id="system_info_tabs" class="nav nav-tabs" style="margin-bottom: 20px">
+			<li id="sysLog" class="active"><a href="#syslog_info_tab"
+				data-toggle="tab" onclick="changeToSysLog()">系统日志</a></li>
+			<li id="webLog"><a href="#syslog_info_tab" data-toggle="tab"
+				onclick="changeToWebLog()">操作日志</a></li>
+		</ul>
+		<table id="jqGrid"></table>
+		<div id="jqGridPager"></div>
+
+	<script src="../resources/sys/js/sys/logmanager.js"></script>
+</body>
+</html>

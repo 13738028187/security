@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>系统监测</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+	name="viewport">
+<script src="vue.min.js"></script>
+<script src="echarts.min.js"></script>
+<script src="https://cdn.bootcss.com/sockjs-client/1.1.4/sockjs.js"></script>
+<!-- <script src="demo.js"></script> -->
+<script src="websocket.js"></script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
+<script src="https://cdn.bootcss.com/stomp.js/2.3.3/stomp.js"></script>
+<script src="../resources/sys/statics/libs/jquery.min.js"></script>
+<script>
+$(document).ready(function(){
+   	var myChart = echarts.init(document.getElementById('main'));
+
+	var loanDataValues = [];
+	var repayDataValues = [];
+
+	// 使用刚指定的配置项和数据显示图表。
+	var showChartFunc = function() {
+		myChart
+				.setOption({
+					title : {
+						show : false,
+						text : '图表详情'
+					},
+					tooltip : {
+						trigger : 'item',
+						formatter : function(params) {
+							var date = new Date(params.value[0]);
+							data = date.getFullYear() + '-'
+									+ (date.getMonth() + 1) + '-'
+									+ date.getDate() + ' ' + date.getHours()
+									+ ':' + date.getMinutes() + ':'
+									+ date.getSeconds();
+							return data + '<br/>' + '金额:' + params.value[1]
+									+ '<br/>' + '公司:' + params.value[2];
+						}
+					},
+					legend : {
+						data : [ 'Demo1金额', 'Demo2金额' ]
+					},
+					toolbox : {
+						show : true,
+						feature : {
+							mark : {
+								show : true
+							},
+							dataView : {
+								show : true,
+								readOnly : false
+							},
+							restore : {
+								show : true
+							},
+							saveAsImage : {
+								show : true
+							}
+						}
+					},
+					xAxis : [ {
+						type : 'time',
+						splitNumber : 10,
+						boundaryGap : [ '20%', '20%' ],
+						min : 'dataMin',
+						max : 'dataMax'
+					} ],
+					yAxis : [ {
+						type : 'value',
+						scale : true,
+						name : '金额(元)',
+						min : 0,
+						boundaryGap : [ '20%', '20%' ]
+					} ],
+					dataZoom : {
+						type : 'inside',
+						start : 0,
+						end : 100
+					},
+					series : [ {
+						name : 'Demo1金额',
+						type : 'line',
+						smooth : true,
+						symbol : 'circle',
+						data : loanDataValues
+					}, {
+						name : 'Demo2金额',
+						type : 'line',
+						smooth : true,
+						symbol : 'rect',
+						data : repayDataValues
+					} ]
+				});
+	};
+
+	/**
+	 * 实时接受消息并绘制图标
+	 * 
+	 * @param message
+	 */
+	var addPointFunc = function addPoint(message) {
+		//var dataVo = JSON.parse(message.body);
+		//var dataVo = JSON.parse(message);
+		var dataVo = JSON.parse(message);
+		addData(dataVo);
+		showChartFunc();
+	};
+	
+
+	function addData(dataVo) {
+		if (dataVo.type == 1) {
+			loanDataValues.push([ dataVo.date, dataVo.value, dataVo.name ]);
+		} else if (dataVo.type == 2) {
+			repayDataValues.push([ dataVo.date, dataVo.value, dataVo.name ]);
+		}
+	}
+
+	/**
+	 * WebSocket连接
+	 */
+	var connectFunc = function connect() {
+		websocket.createConnect("/security/getLoanPoints", "/topic/addLoanPoint",
+				addPointFunc);
+	};
+
+	/**
+	 * 发送数据到服务器(暂时不用)
+	 */
+	var sendValueFunc = function sendValue() {
+		var value = document.getElementById('name').value;
+		websocket.sendData("warn", value);
+	};
+
+	/**
+	 * 获取当日借贷信息
+	 */
+	var getLoanFunc = function() {
+		$.getJSON('getLoanInfo').done(function(data) {
+			if (data.success) {
+				loanDataValues = data.loanInfos.datas;
+				repayDataValues = data.repayInfos.datas;
+				showChartFunc();
+			} else {
+				alert(data.message);
+			}
+		});
+	};
+   connectFunc();
+   addPointFunc('{"type":"1","date":"2017-8-1","value":"1","name":"zyd"}');
+   $('#show').click(function(){
+        sendValueFunc();
+   });
+});
+</script>
+</head>
+<body>
+	<div id="rrapp">
+		<div class="grid-btn"></div>
+		<div>
+			<table class="table">
+				<caption>系统基本信息</caption>
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>Attribute</th>
+					</tr>
+				</thead>
+				<tbody id="sysInfo">
+					<tr v-for="(value,key) in info">
+						<td>{{key}}</td>
+						<td>{{value}}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div id="name">{"type":"1","date":"2017-8-2","value":"1","name":"zyd"}</div>
+		<div id="main" style="width: 600px; height: 400px;"></div>
+		<input id="show" type="button" >zyd</input>
+		</script>
+</body>
+</html>

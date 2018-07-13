@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>安全域配置</title>
+#parse("sys/header.html")
+</head>
+<body>
+	<div id="rrapp">
+		<div class="grid-btn">
+			<div class="form-inline" role="form">
+				<a href="javascript:;" class="btn btn-info btn-2x"
+					@click="showInsert"> <span class="glyphicon glyphicon-plus"></span> 新增
+
+				</a>
+				
+				<a href="javascript:;" class="btn btn-danger btn-2x"
+						@click="deleted"> 
+					<span class="glyphicon glyphicon-trash"></span> 删除
+				</a>
+
+				<div class="form-group">
+					<label>安全域名：</label> <input type="text" id="name"
+						class="form-control" maxlength="18" placeholder="不输入默认搜索所有">
+				</div>
+
+				<a href="javascript:;" class="btn btn-info btn-2x" @click="searcher">
+					<span class="glyphicon glyphicon-search"></span> 搜索
+				</a>
+
+			</div>
+		</div>
+		<table id="jqGrid"></table>
+		<div id="jqGridPager"></div>
+
+		<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    		<div class="modal-dialog">
+        		<div class="modal-content">
+            		<div class="modal-header">
+                		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    		&times;
+                		</button>
+                		<h4 class="modal-title" id="myModalLabel">
+                    		{{title}}
+                		</h4>
+            		</div>
+           			<div class="modal-body">
+           				<p>
+                    		<label for="">安全域名称：</label>
+                    		<input type="text" class="form-control treeBox" maxlength="18" v-model="securityArea.name">
+                		</p>
+                		<p>
+                    		<label for="">安全域优先级：</label>
+                    		<select class="form-control" v-model="securityArea.level">
+								<option value="1">级别1</option>
+								<option value="2">级别2</option>
+								<option value="3">级别3</option>
+								<option value="4">级别4</option>
+							</select>
+                		</p>
+            		</div>
+            		<div class="modal-footer">
+            			<button class="btn btn-default" @click="reset">重置
+                		</button>
+                		<button class="btn btn-default" @click="insertOrUpdate">确定
+                		</button>
+            		</div>
+        		</div><!-- /.modal-content -->
+    		</div><!-- /.modal -->
+			</div>
+
+		<!-- <div class="modal fade" id="editModal2" tabindex="-1" role="dialog"
+			aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-hidden="true">Close</button>
+						<h4 class="modal-title" id="myModalLabel2">接口详情</h4>
+					</div>
+					<div class="modal-body">
+						<div class="container" role="form"
+							style="width: 70%; height: 250px">
+
+							<div class="form-inline">
+							
+								<div class="col-sm-7" style="padding-left: 0px;">
+								
+								<div class="col-sm-7" style="left: -100px;">
+										<a href="javascript:;" @click="insert"> <span
+											class="glyphicon glyphicon-plus-sign"></span>新增
+										</a>
+									</div>
+									
+									<ul class="list-group" id="listItem">
+										<li class="list-group-item" style="width: 300px;display:none;"><label
+											class="control-label">接口名称:</label> <input type="text"
+											class="form-control" style="width: 120px;" /> <label>
+												<span class="glyphicon glyphicon-minus-sign"
+												style="cursor: pointer; margin-left: 50%; color: #337ab7;"
+												title="删除" @click="del">删除</span>
+										</label></li>		
+									</ul>
+
+									
+								</div>
+
+
+
+
+							</div>
+							<div class="form-inline">
+								<label>源Ip掩码：</label><input type="text"  size="30"
+									maxlength="18" v-model="securityArea.originIpMask">
+							</div>
+							<br>
+
+						</div>
+					</div>
+					<div class="modal-footer">
+
+						<button type="button" class="btn btn-green" @click="">确定</button>
+					</div>
+				</div>
+			</div>
+		</div> -->
+	</div>
+
+
+
+	<script src="../resources/sys/js/sys/securityArea.js"></script>
+</body>
+</html>

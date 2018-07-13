@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hzdy.dao.BaselineStrategyDao">
+
+	<select id="queryStrategies" resultMap="strategymap">
+		select * from hzdy_baseline_strategy 
+		<if test="_parameter != null and _parameter != ''">
+			where name like '%${_parameter}%'
+		</if>
+	</select>
+	
+	<resultMap type="com.hzdy.entity.BaselineStrategy" id="strategymap">
+		<id property="strategyId" column="strategy_id"/>
+		<result property="name" column="name"/>
+		<result property="type" column="type"/>
+		<result property="ips" column="ips"/>
+		<result property="ipStatus" column="ip_status"/>
+		<result property="ports" column="ports"/>
+		<result property="portStatus" column="port_status"/>
+	</resultMap>
+	
+	<select id="queryStrategyById" parameterType="Integer" resultType="com.hzdy.entity.BaselineStrategy">
+		select * from hzdy_baseline_strategy where strategy_id = #{param}
+	</select>
+	
+	<select id="checkDuplication" parameterType="com.hzdy.entity.BaselineStrategy" resultType="com.hzdy.entity.BaselineStrategy">
+		select * from hzdy_baseline_strategy where name = #{name} and strategy_id != #{strategyId}
+	</select>
+	
+	<insert id="insertStrategy" parameterType="com.hzdy.entity.BaselineStrategy" useGeneratedKeys="true" keyProperty="strategy_id">
+		insert into hzdy_baseline_strategy (name, type, ips, ip_status, ports, port_status)
+		values (#{name}, #{type}, #{ips}, #{ipStatus}, #{ports}, #{portStatus})
+	</insert>
+	
+	<update id="updateStrategy" parameterType="com.hzdy.entity.BaselineStrategy">
+		update hzdy_baseline_strategy
+		set name = #{name}, type = #{type}, ips = #{ips}, ip_status = #{ipStatus}, ports = #{ports}, port_status = #{portStatus}
+		where strategy_id = #{strategyId}
+	</update>
+	
+	<delete id="deleteStrategy" parameterType="Integer">
+		delete from hzdy_baseline_strategy where strategy_id = #{strategyId}
+	</delete>
+
+</mapper>

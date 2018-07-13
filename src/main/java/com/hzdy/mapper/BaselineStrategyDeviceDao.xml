@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hzdy.dao.BaselineStrategyDeviceDao">
+
+	<select id="queryStrategyDevice" parameterType="Integer" resultMap="strategydevicemap">
+		select * from hzdy_baseline_strategy_device where strategy_id = #{param}
+	</select>
+	
+	<resultMap type="com.hzdy.entity.BaselineStrategy" id="strategydevicemap">
+		<result property="strategyId" column="strategy_id"/>
+		<result property="device_id" column="device_id"/>
+	</resultMap>
+	
+	<insert id="insertStrategyDevice" parameterType="com.hzdy.entity.BaselineStrategy">
+		insert into hzdy_baseline_strategy_device (strategy_id, device_id)
+		values (#{param1}, #{param2})
+	</insert>
+	
+	<delete id="deleteStrategyDevice" parameterType="Integer">
+		delete from hzdy_baseline_strategy_device where strategy_id = #{strategyId} and device_id = #{deviceId}
+	</delete>
+
+</mapper>

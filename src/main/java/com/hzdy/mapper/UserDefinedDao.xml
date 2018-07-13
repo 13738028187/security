@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hzdy.dao.UserDefinedDao">
+
+	<resultMap type="com.hzdy.entity.UserDefinedOPC" id="opcmap">
+		<id property="userDefinedOPCId" column="userdefined_opc_id"/>
+		<result property="ruleName" column="rule_name"/>
+		<result property="originIP" column="origin_ip"/>
+		<result property="goalIP" column="goal_ip"/>
+		<result property="protocol" column="protocol"/>
+		<result property="interfaces" column="interfaces"/>
+		<result property="method" column="method"/>
+	</resultMap>
+
+	<select id="queryOPCuserDefined" parameterType="Map" resultMap="opcmap">
+		select * from hzdy_userdefined_opc
+		<if test="ruleName !=null and ruleName != ''">
+			where rule_name like CONCAT('%',#{ruleName,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+	<select id="queryOPCtotal" parameterType="Map" resultType="Integer">
+		select count(*) from hzdy_userdefined_opc
+		<if test="ruleName !=null and ruleName != ''">
+			where rule_name like CONCAT('%',#{ruleName,jdbcType=VARCHAR},'%')
+		</if>
+	</select>
+	
+	<select id="checkOPCRuleDuplication" parameterType="com.hzdy.entity.UserDefinedOPC" resultType="com.hzdy.entity.UserDefinedOPC">
+		select * from hzdy_userdefined_opc where rule_name = #{ruleName} and userdefined_opc_id != #{userDefinedOPCId}
+	</select>
+	
+	<select id="queryOPCuserDefinedById" parameterType="Integer" resultType="com.hzdy.entity.UserDefinedOPC">
+		select * from hzdy_userdefined_opc where userdefined_opc_id = #{param}
+	</select>
+	
+	<insert id="insertOPCuserDefined" parameterType="com.hzdy.entity.UserDefinedOPC" useGeneratedKeys="true" keyProperty="userdefined_opc_id">
+		insert into hzdy_userdefined_opc (rule_name,origin_ip,goal_ip,protocol,interfaces,method)
+		values (#{ruleName},#{originIP},#{goalIP},#{protocol},#{interfaces},#{method})
+	</insert>
+	
+	<delete id="deleteOPCuserDefined" parameterType="Integer">
+		delete from hzdy_userdefined_opc where userdefined_opc_id = #{param}
+	</delete>
+	
+	<update id="updateOPCuserDefined" parameterType="com.hzdy.entity.UserDefinedOPC">
+		update hzdy_userdefined_opc set rule_name = #{ruleName}, origin_ip = #{originIP}, goal_ip = #{goalIP}, protocol = #{protocol}, interfaces = #{interfaces}, method = #{method}
+		where userdefined_opc_id = #{userDefinedOPCId}
+	</update>
+	
+	<resultMap type="com.hzdy.entity.UserDefinedS7" id="s7map">
+		<id property="userDefinedS7Id" column="userdefined_s7_id"/>
+		<result property="ruleName" column="rule_name"/>
+		<result property="originIP" column="origin_ip"/>
+		<result property="goalIP" column="goal_ip"/>
+		<result property="originIPmac" column="origin_ip_mac"/>
+		<result property="goalIPmac" column="goal_ip_mac"/>
+		<result property="readwriteAttr" column="readwrite_attr"/>
+		<result property="registerArea" column="register_area"/>
+		<result property="dbAreaNum" column="db_area_num"/>
+		<result property="pointType" column="point_type"/>
+		<result property="initialAddr" column="initial_addr"/>
+		<result property="endAddr" column="end_addr"/>
+		<result property="protocol" column="protocol"/>
+	</resultMap>
+
+	<select id="queryS7userDefined" parameterType="Map" resultMap="s7map">
+		select * from hzdy_userdefined_s7
+		<if test="ruleName !=null and ruleName != ''">
+			where rule_name like CONCAT('%',#{ruleName,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+	<select id="queryS7total" parameterType="Map" resultType="Integer">
+		select count(*) from hzdy_userdefined_s7
+		<if test="ruleName !=null and ruleName != ''">
+			where rule_name like CONCAT('%',#{ruleName,jdbcType=VARCHAR},'%')
+		</if>
+	</select>
+	
+	<select id="checkS7RuleDuplication" parameterType="com.hzdy.entity.UserDefinedS7" resultType="com.hzdy.entity.UserDefinedS7">
+		select * from hzdy_userdefined_s7 where rule_name = #{ruleName} and userdefined_s7_id != #{userDefinedS7Id}
+	</select>
+	
+	<select id="queryS7userDefinedById" parameterType="Integer" resultType="com.hzdy.entity.UserDefinedS7">
+		select * from hzdy_userdefined_s7 where userdefined_s7_id = #{param}
+	</select>
+	
+	<insert id="insertS7userDefined" parameterType="com.hzdy.entity.UserDefinedS7" useGeneratedKeys="true" keyProperty="userdefined_s7_id">
+		insert into hzdy_userdefined_s7 (rule_name,origin_ip,goal_ip,origin_ip_mac,goal_ip_mac,readwrite_attr,register_area,db_area_num,point_type,initial_addr,end_addr,protocol)
+		values (#{ruleName},#{originIP},#{goalIP},#{originIPmac},#{goalIPmac},#{readwriteAttr},#{registerArea},#{dbAreaNum},#{pointType},#{initialAddr},#{endAddr},#{protocol})
+	</insert>
+	
+	<delete id="deleteS7userDefined" parameterType="Integer">
+		delete from hzdy_userdefined_s7 where userdefined_s7_id = #{param}
+	</delete>
+	
+	<update id="updateS7userDefined" parameterType="com.hzdy.entity.UserDefinedS7">
+		update hzdy_userdefined_s7 
+		set rule_name = #{ruleName}, origin_ip = #{originIP}, goal_ip = #{goalIP}, origin_ip_mac = #{originIPmac}, goal_ip_mac = #{goalIPmac}, readwrite_attr = #{readwriteAttr}, register_area = #{registerArea}, db_area_num = #{dbAreaNum}, point_type = #{pointType}, initial_addr = #{initialAddr}, end_addr = #{endAddr}, protocol = #{protocol}
+		where userdefined_s7_id = #{userDefinedS7Id}
+	</update>
+	
+	<resultMap type="com.hzdy.entity.UserDefinedMODBUS" id="modbusmap">
+		<id property="userDefinedMODBUSId" column="userdefined_modbus_id"/>
+		<result property="ruleName" column="rule_name"/>
+		<result property="originIP" column="origin_ip"/>
+		<result property="goalIP" column="goal_ip"/>
+		<result property="originIPmac" column="origin_ip_mac"/>
+		<result property="goalIPmac" column="goal_ip_mac"/>
+		<result property="functionCode" column="function_code"/>
+		<result property="initialAddr" column="initial_addr"/>
+		<result property="endAddr" column="end_addr"/>
+		<result property="protocol" column="protocol"/>
+	</resultMap>
+
+	<select id="queryMODBUSuserDefined" parameterType="Map" resultMap="modbusmap">
+		select * from hzdy_userdefined_modbus
+		<if test="ruleName !=null and ruleName != ''">
+			where rule_name like CONCAT('%',#{ruleName,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+	<select id="queryMODBUStotal" parameterType="Map" resultType="Integer">
+		select count(*) from hzdy_userdefined_modbus
+		<if test="ruleName !=null and ruleName != ''">
+			where rule_name like CONCAT('%',#{ruleName,jdbcType=VARCHAR},'%')
+		</if>
+	</select>
+	
+	<select id="checkMODBUSRuleDuplication" parameterType="com.hzdy.entity.UserDefinedMODBUS" resultType="com.hzdy.entity.UserDefinedMODBUS">
+		select * from hzdy_userdefined_modbus where rule_name = #{ruleName} and userdefined_modbus_id != #{userDefinedMODBUSId}
+	</select>
+	
+	<select id="queryMODBUSuserDefinedById" parameterType="Integer" resultType="com.hzdy.entity.UserDefinedMODBUS">
+		select * from hzdy_userdefined_modbus where userdefined_modbus_id = #{param}
+	</select>
+	
+	<insert id="insertMODBUSuserDefined" parameterType="com.hzdy.entity.UserDefinedMODBUS" useGeneratedKeys="true" keyProperty="userdefined_modbus_id">
+		insert into hzdy_userdefined_modbus (rule_name,origin_ip,goal_ip,origin_ip_mac,goal_ip_mac,function_code,initial_addr,end_addr,protocol)
+		values (#{ruleName},#{originIP},#{goalIP},#{originIPmac},#{goalIPmac},#{functionCode},#{initialAddr},#{endAddr},#{protocol})
+	</insert>
+	
+	<delete id="deleteMODBUSuserDefined" parameterType="Integer">
+		delete from hzdy_userdefined_modbus where userdefined_modbus_id = #{param}
+	</delete>
+	
+	<update id="updateMODBUSuserDefined" parameterType="com.hzdy.entity.UserDefinedMODBUS">
+		update hzdy_userdefined_modbus 
+		set rule_name = #{ruleName}, origin_ip = #{originIP}, goal_ip = #{goalIP}, origin_ip_mac = #{originIPmac}, goal_ip_mac = #{goalIPmac}, function_code = #{functionCode}, initial_addr = #{initialAddr}, end_addr = #{endAddr}, protocol = #{protocol}
+		where userdefined_modbus_id = #{userDefinedMODBUSId}
+	</update>
+	
+</mapper>

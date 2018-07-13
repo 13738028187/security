@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hzdy.dao.EquipmentDao">
+
+	<sql id="Base_Column_List">
+		id,equipment_name,o_id,online_status,work_pattern,online_time,ip,is_delete,insert_date
+	</sql>
+
+	<!-- 根据权限ID 获取 权限信息 -->
+	<select id="queryObject" resultMap="Equipmentmap">
+		select
+		<include refid="Base_Column_List" />
+		from hzdy_equipment where id = #{value}
+	</select>
+	<!-- 根据权限ID 获取 权限信息 -->
+	<select id="queryAll" resultMap="Equipmentmap">
+		select
+		<include refid="Base_Column_List" />
+		from hzdy_equipment;
+	</select>
+	<!-- 条件查询 -->
+	<select id="queryList" parameterType="Map" resultMap="Equipmentmap">
+		select * from hzdy_equipment
+		
+		<trim prefix="WHERE" prefixOverrides="AND|OR">
+			<if test="equipmentName !=null and equipmentName != ''">
+				AND equipment_name like CONCAT('%',#{equipmentName,jdbcType=VARCHAR},'%')
+			</if>
+			<if test="ip !=null and ip != ''">
+				AND ip like CONCAT('%',#{ip,jdbcType=VARCHAR},'%')
+			</if>
+			<if test="onlineStatus !=null and onlineStatus != ''">
+				AND online_status like CONCAT('%',#{onlineStatus,jdbcType=VARCHAR},'%')
+			</if>
+			<if test="workPattern !=null and workPattern != ''">
+				AND work_pattern like CONCAT('%',#{workPattern,jdbcType=VARCHAR},'%')
+			</if>
+		</trim>
+		
+		order by id ASC
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	
+	</select>
+	<!-- 条件查询总记录数 -->
+	<select id="queryTotalByMap" parameterType="Map" resultType="int">
+		select count(*) from hzdy_equipment
+		
+		<trim prefix="WHERE" prefixOverrides="AND|OR">
+			<if test="equipmentName !=null and equipmentName != ''">
+				AND equipment_name like CONCAT('%',#{equipmentName,jdbcType=VARCHAR},'%')
+			</if>
+			<if test="ip !=null and ip != ''">
+				AND ip like CONCAT('%',#{ip,jdbcType=VARCHAR},'%')
+			</if>
+			<if test="onlineStatus !=null and onlineStatus != ''">
+				AND online_status like CONCAT('%',#{onlineStatus,jdbcType=VARCHAR},'%')
+			</if>
+			<if test="workPattern !=null and workPattern != ''">
+				AND work_pattern like CONCAT('%',#{workPattern,jdbcType=VARCHAR},'%')
+			</if>
+		</trim>
+	
+	</select>
+	<!-- 获取 权限总记录数 -->
+	<select id="queryTotal" resultType="int">
+		select count(*) from
+		hzdy_equipment
+	</select>
+	<delete id="delete" parameterType="int">
+		delete from hzdy_equipment
+		where
+		id =
+		#{id}
+	</delete>
+	<!-- 插入 数据 -->
+	<insert id="save" parameterType="com.hzdy.entity.Equipment"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into
+		hzdy_equipment(equipment_name,o_id,online_status,work_pattern,online_time,ip,is_delete)
+		values(#{equipmentName,jdbcType=VARCHAR},#{oId,jdbcType=VARCHAR},#{onlineStatus,jdbcType=VARCHAR},#{workPattern,jdbcType=VARCHAR},#{onlineTime,jdbcType=VARCHAR},#{ip,jdbcType=VARCHAR},#{isDelete,jdbcType=INTEGER})
+		<!-- <trim prefix="values(" suffix=")" suffixOverrides=","> <if test="Equipment 
+			!= null"> #{Equipment,jdbcType=VARCHAR}, </if> <if test="subnetEquipment 
+			!= null"> #{subnetEquipment,jdbcType=VARCHAR}, </if> <if test="equEquipmentmentId 
+			!= null"> #{equEquipmentmentId,jdbcType=INTEGER}, </if> </trim> -->
+	</insert>
+	<!-- 修改数据 -->
+	<update id="update" parameterType="com.hzdy.entity.Equipment">
+		update hzdy_equipment
+		<set>
+			<if test="Equipment != null">
+				#{Equipment,jdbcType=VARCHAR},
+			</if>
+			<if test="subnetEquipment != null">
+				#{subnetEquipment,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	<resultMap id="Equipmentmap" type="com.hzdy.entity.Equipment">
+		<id property="id" column="id" />
+		<result property="equipmentName" column="equipment_name" />
+		<result property="oId" column="o_id" />
+		<result property="onlineStatus" column="online_status" />
+		<result property="workPattern" column="work_pattern" />
+		<result property="onlineTime" column="online_time" />
+		<result property="ip" column="ip" />
+		<result property="isDelete" column="is_delete" />
+		<result property="insertDate" column="insert_date" />
+	</resultMap>
+</mapper>

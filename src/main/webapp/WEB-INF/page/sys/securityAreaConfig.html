@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>用户管理</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link rel="stylesheet" href="../resources/sys/statics/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../resources/sys/statics/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../resources/sys/statics/plugins/jqgrid/ui.jqgrid-bootstrap.css">
+    <link rel="stylesheet" href="../resources/sys/statics/plugins/ztree/css/metroStyle/metroStyle.css">
+    <link rel="stylesheet" href="../resources/sys/statics/css/main.css">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
+    <link rel="stylesheet" href="http://jqueryui.com/resources/demos/style.css">
+    <script src="//code.jquery.com/jquery-1.9.1.js"></script>
+    <script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+    <!-- <script src="../resources/sys/statics/libs/jquery.min.js"></script> -->
+    <script src="../resources/sys/statics/plugins/layer/layer.js"></script>
+    <script src="../resources/sys/statics/libs/bootstrap.min.js"></script>
+    <script src="../resources/sys/statics/libs/vue.min.js"></script>
+    <script src="../resources/sys/statics/plugins/jqgrid/grid.locale-cn.js"></script>
+    <script src="../resources/sys/statics/plugins/jqgrid/jquery.jqGrid.min.js"></script>
+    <script src="../resources/sys/statics/plugins/ztree/jquery.ztree.all.min.js"></script>
+    <script src="../resources/sys/statics/plugins/My97DatePicker/WdatePicker.js"></script>
+    <script src="../resources/sys/js/common.js"></script>
+</head>
+<body>
+
+<div id="rrapp">
+	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    	{{title}}
+                </h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    <label for="">网络号：</label>
+                    <input type="text" class="form-control treeBox" v-model="networkNumber">
+                </p>
+            </div>
+            <div class="modal-footer">
+            	<button class="btn btn-default" @click="reset">重置
+                </button>
+                <button class="btn btn-default" @click="insertOrUpdate">确定
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+	</div>
+
+    <div class="grid-btn">
+		<div class="form-inline" role="form">
+			<a class="btn btn-info btn-2x" @click="showInsert"> 
+				<span class="glyphicon glyphicon-plus"></span> 新增
+			</a>
+			<a href="javascript:;" class="btn btn-danger btn-2x"
+				@click="deleteConfig"> 
+				<span class="glyphicon glyphicon-trash"></span> 删除
+			</a>
+			<div class="form-group">
+				<label>网络号：</label> <input type="text" class="form-control"
+					id="networkNumber" maxlength="10" placeholder="不输入默认搜索所有">
+			</div>
+
+			<a href="javascript:;" class="btn btn-info btn-2x"
+				@click="search"> 
+				<span class="glyphicon glyphicon-search"></span> 搜索
+			</a>
+			
+			<a href="securityArea.html" class="btn btn-info btn-2x" 
+				style="position:absolute;right:0"> 
+				<span class="glyphicon glyphicon-menu-left" ></span> 返回
+			</a>
+
+		</div>
+	</div>
+	<table id="jqGrid"></table>
+	<div id="jqGridPager"></div>
+</div>
+
+<script src="../resources/sys/js/sys/securityAreaConfig.js"></script>
+</body>
+</html>

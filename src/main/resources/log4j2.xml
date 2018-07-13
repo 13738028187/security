@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="info" monitorInterval="300">
+	<!-- 先定义所有的appender -->
+	<CustomLevels>
+		<CustomLevel name="WRONG" intLevel="320" />
+		<CustomLevel name="WARNING" intLevel="340" />
+		<CustomLevel name="SUCCESS" intLevel="360" />
+		<CustomLevel name="NORMAL" intLevel="380" />
+	</CustomLevels>
+	<appenders>
+		<!-- 这个输出控制台的配置 -->
+		<Console name="Console" target="SYSTEM_OUT">
+			<PatternLayout pattern="[%p] [%c] (%F\:%L) - %m%n  " />
+			<!-- 控制台只输出level及以上级别的信息（onMatch），其他的直接拒绝（onMismatch） -->
+			<ThresholdFilter level="trace" onMatch="ACCEPT"
+				onMismatch="DENY" />
+		</Console>
+		<RollingFile name="RollingFile"
+			fileName="logs/${date:yyyy-MM}/system-%d{MM-dd-yyyy}-%i.log.gz"
+			filePattern="logs/${date:yyyy-MM}/system-%d{MM-dd-yyyy}-%i.log.gz">
+			<PatternLayout
+				pattern="[%d{yyyy.MM.dd HH:mm:ss}]-[level:%-5level]-[class:%c{20} line:%L]-[message:%msg%xEx]-%x%n" />
+			<SizeBasedTriggeringPolicy size="50MB" />
+		</RollingFile>
+		<!-- <Flume name="FlumeAppender" compress="false"> <Agent host="10.0.0.1" 
+			port="4444" /> <PatternLayout pattern="[%d{yyyy.MM.dd HH:mm:ss}]-[level:%-5level]-[class:%c{20} 
+			line:%L]-[message:%msg%xEx]-%x%n" /> <RFC5424Layout enterpriseNumber="18060" 
+			includeMDC="false" /> </Flume> -->
+	<!-- 	<Gelf name="gelf" host="udp:192.168.1.123" port="12201" version="1.1"
+			extractStackTrace="true" filterStackTrace="true" mdcProfiling="true"
+			includeFullMdc="true" maximumMessageSize="8192" originHost="%host{fqdn}"
+			additionalFieldTypes="fieldName1=String,fieldName2=Double,fieldName3=Long">
+			<Field name="timestamp" pattern="%d{dd MMM yyyy HH:mm:ss,SSS}" />
+			<Field name="level" pattern="%level" />
+			<Field name="simpleClassName" pattern="%C{1}" />
+			<Field name="className" pattern="%C" />
+			<Field name="server" pattern="%host" />
+			<Field name="server.fqdn" pattern="%host{fqdn}" />
+			
+			This is a static field
+			<Field name="fieldName2" literal="fieldValue2" />
+
+			This is a field using MDC
+			<Field name="mdcField2" mdc="mdcField2" />
+			<DynamicMdcFields regex="mdc.*" />
+			<DynamicMdcFields regex="(mdc|MDC)fields" />
+		</Gelf> -->
+		<Socket name="logstash-udp" host="192.168.2.9" port="4560">
+		   <JsonLayout compact="true" eventEol="true" />
+		   <PatternLayout pattern="[%d{yyyy.MM.dd HH:mm:ss}]-[level:%-5level]-[class:%c{20} line:%L]-[message:%msg%xEx]-%x%n" />
+		</Socket>
+	</appenders>
+	<loggers>
+		<root level="INFO">
+			<!-- <appender-ref ref="RollingFile"/> -->
+			<appender-ref ref="Console" />
+			<!-- <appender-ref ref="gelf" /> -->
+			<appender-ref ref="logstash-udp" /> 
+			<!-- <appender-ref ref="FlumeAppender" level="NORMAL" /> -->
+		</root>
+	</loggers>
+</configuration>

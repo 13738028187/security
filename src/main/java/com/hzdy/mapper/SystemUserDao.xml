@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hzdy.dao.SystemUserDao">
+
+    <sql id="Base_Column_List">
+		id, login_name, password, sex, user_name, account_status,salt
+	</sql>
+
+    <select id="queryObject" resultType="com.hzdy.entity.SystemUser">
+        select
+        <include refid="Base_Column_List"/>
+        from hzdy_system_user where id = #{value}
+    </select>
+
+    <select id="queryList" resultType="com.hzdy.entity.SystemUser">
+        select
+        <include refid="Base_Column_List"/>
+        from hzdy_system_user order by id desc
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <select id="queryTotal" resultType="int">
+		select count(*) from hzdy_system_user
+	</select>
+
+    <!-- 查询 后台用户的所有权限   priority_type=0 代表 后台权限，=1代表微信客户端权限 -->
+    <select id="queryAllPerms" resultType="String">
+		select m.perms from
+		hzdy_system_user_role ur
+		LEFT JOIN hzdy_system_role_priority rm on ur.role_id = rm.role_id
+		LEFT JOIN hzdy_priority m on rm.priority_id = m.priority_id
+		where ur.user_id = #{userId} and m.priority_type = 0
+	</select>
+
+    <!-- 查询用户的所有菜单ID -->
+    <select id="queryAllMenuId" resultType="int">
+		select m.priority_id from
+		hzdy_system_user_role ur
+		LEFT JOIN hzdy_system_role_priority rm on ur.role_id = rm.role_id
+		LEFT JOIN hzdy_priority m on rm.priority_id = m.priority_id
+		where ur.user_id = #{userId} and m.priority_type = 0
+	</select>
+
+    <select id="queryByLoginName" resultType="com.hzdy.entity.SystemUser">
+		select * from
+		hzdy_system_user where login_name = #{username}
+	</select>
+
+    <update id="updatePassword" parameterType="map">
+		update
+		hzdy_system_user set `password` = #{newPassword}
+		where id = #{userId} and password = #{password}
+	</update>
+
+    <delete id="deleteBatch">
+        delete from hzdy_system_user where id in
+        <foreach item="userId" collection="array" open="(" separator=","
+                 close=")">
+            #{userId}
+        </foreach>
+        ;
+        delete from hzdy_system_user_role where user_id in
+        <foreach item="userId" collection="array" open="(" separator=","
+                 close=")">
+            #{userId}
+        </foreach>
+    </delete>
+
+    <insert id="save" parameterType="com.hzdy.entity.SystemUser" useGeneratedKeys="true" keyProperty="id">
+        insert into hzdy_system_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="loginName != null">
+                login_name,
+            </if>
+            <if test="password != null">
+                password,
+            </if>
+            <if test="sex != null">
+                sex,
+            </if>
+            <if test="userName != null">
+                user_name,
+            </if>
+            <if test="accountStatus != null">
+                account_status,
+            </if>
+            <if test="salt != null">
+                salt,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="loginName != null">
+                #{loginName,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="sex != null">
+                #{sex,jdbcType=VARCHAR},
+            </if>
+            <if test="userName != null">
+                #{userName,jdbcType=VARCHAR},
+            </if>
+            <if test="accountStatus != null">
+                #{accountStatus,jdbcType=TINYINT},
+            </if>
+            <if test="salt != null">
+                #{salt,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="update" parameterType="com.hzdy.entity.SystemUser">
+        update hzdy_system_user
+        <set>
+            <if test="loginName != null">
+                login_name = #{loginName,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                password = #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="sex != null">
+                sex = #{sex,jdbcType=VARCHAR},
+            </if>
+            <if test="userName != null">
+                user_name = #{userName,jdbcType=VARCHAR},
+            </if>
+            <if test="accountStatus != null">
+                account_status = #{accountStatus,jdbcType=TINYINT},
+            </if>
+            <if test="salt != null">
+                salt = #{salt,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <insert id="insertSystemUser" parameterType="com.hzdy.entity.SystemUser" useGeneratedKeys="true"
+            keyProperty="id">
+		insert into hzdy_system_user (login_name,password,sex,salt,user_name)
+		values(#{loginName},#{password},#{sex},#{salt},#{userName})
+	</insert>
+
+    <select id="queryUserByloginNameAnduserName" parameterType="String" resultType="com.hzdy.entity.SystemUser">
+        SELECT * FROM hzdy_system_user WHERE login_name = #{param}
+    </select>
+
+    <select id="queryAllUser" resultMap="usermap">
+		SELECT * FROM hzdy_system_user
+		LEFT JOIN hzdy_system_user_role ON hzdy_system_user.id=hzdy_system_user_role.user_id
+		LEFT  JOIN hzdy_system_role ON hzdy_system_user_role.role_id=hzdy_system_role.role_id
+		LEFT JOIN  hzdy_system_role_priority ON hzdy_system_role.role_id=hzdy_system_role_priority.role_id
+		LEFT JOIN hzdy_priority ON hzdy_system_role_priority.priority_id=hzdy_priority.priority_id
+	</select>
+
+    <resultMap id="usermap" type="com.hzdy.entity.SystemUser">
+        <id property="id" column="id"/>
+        <result property="loginName" column="login_name"/>
+        <result property="password" column="password"/>
+        <result property="sex" column="sex"/>
+        <result property="userName" column="user_name"/>
+        <result property="accountStatus" column="account_status"/>
+        <result property="salt" column="salt"/>
+        <collection property="systemRoles" ofType="com.hzdy.entity.SystemRole" javaType="ArrayList">
+            <id property="id" column="role_id"/>
+            <result property="avaliable" column="avaliable"/>
+            <result property="roleName" column="role_name"/>
+            <result property="description" column="description"/>
+            <result property="createDate" column="create_date"/>
+        </collection>
+    </resultMap>
+
+    <delete id="deleteSystemUser" parameterType="Integer">
+        DELETE FROM hzdy_system_user WHERE id = #{param}
+    </delete>
+
+</mapper>

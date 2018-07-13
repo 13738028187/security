@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hzdy.dao.ApparatusDao">
+	<sql id="Base_Column_List">
+		apparatus_id,number,name,type,money,principal
+	</sql>
+
+	<!-- 根据权限ID 获取 权限信息 -->
+	<select id="queryObject" resultMap="resultmap">
+		select
+		<include refid="Base_Column_List" />
+		from hzdy_apparatus where apparatus_id = #{value}
+	</select>
+	<!-- 根据权限ID 获取 权限信息 -->
+	<select id="queryAll" resultMap="resultmap">
+		select
+		<include refid="Base_Column_List" />
+		from hzdy_apparatus;
+	</select>
+
+	<!-- 分页查询 权限  -->
+	<select id="queryList" resultType="com.hzdy.entity.Apparatus">
+		select * from hzdy_apparatus
+			order by apparatus_id asc 
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+	<!-- 获取 权限总记录数 -->
+	<select id="queryTotal" resultType="int">
+		select count(*) from hzdy_apparatus
+	</select>
+
+	<!-- 删除时 只是软删除 -->
+	<update id="delete">
+		update hzdy_apparatus where
+		apparatus_id=#{apparatusId}
+	</update>
+
+	<!-- 插入 数据 -->
+	<insert id="save" parameterType="com.hzdy.entity.Apparatus"
+		useGeneratedKeys="true" keyProperty="apparatus_id">
+		insert into hzdy_apparatus(number,name,type,money,principal)
+		values(#{number,jdbcType=VARCHAR},#{name,jdbcType=VARCHAR},#{type,jdbcType=VARCHAR},#{money,jdbcType=VARCHAR},#{principal,jdbcType=VARCHAR})
+	</insert>
+	<!-- 修改数据 -->
+	<update id="update" parameterType="com.hzdy.entity.Apparatus">
+		update hzdy_apparatus
+		<set>
+			<if test="number != null">
+				#{number,jdbcType=VARCHAR},
+			</if>
+			<if test="name != null">
+				#{name,jdbcType=VARCHAR},
+			</if>
+			<if test="type != null">
+				#{type,jdbcType=VARCHAR},
+			</if>
+			<if test="money != null">
+				#{money,jdbcType=VARCHAR},
+			</if>
+			<if test="principal != null">
+				#{principal,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where apparatus_id = #{apparatusId,jdbcType=INTEGER}
+	</update>
+	<resultMap id="resultmap" type="com.hzdy.entity.Apparatus">
+		<id property="apparatusId" column="apparatus_id" />
+		<result property="number" column="number" />
+		<result property="name" column="name" />
+		<result property="type" column="type" />
+		<result property="money" column="money" />
+		<result property="principal" column="principal" />
+	</resultMap>
+</mapper>

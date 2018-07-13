@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>白名单管理</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+<link rel="stylesheet" href="../resources/sys/statics/css/bootstrap.min.css">
+<link rel="stylesheet" href="../resources/sys/statics/css/font-awesome.min.css">
+<link rel="stylesheet" href="../resources/sys/statics/plugins/jqgrid/ui.jqgrid-bootstrap.css">
+<link rel="stylesheet" href="../resources/sys/statics/plugins/ztree/css/metroStyle/metroStyle.css">
+<link rel="stylesheet" href="../resources/sys/statics/css/main.css">
+<script src="../resources/sys/statics/libs/jquery.min.js"></script>
+<script src="../resources/sys/statics/plugins/layer/layer.js"></script>
+<script src="../resources/sys/statics/libs/bootstrap.min.js"></script>
+<script src="../resources/sys/statics/libs/vue.min.js"></script>
+<script src="../resources/sys/statics/plugins/jqgrid/grid.locale-cn.js"></script>
+<script src="../resources/sys/statics/plugins/jqgrid/jquery.jqGrid.min.js"></script>
+<script src="../resources/sys/statics/plugins/ztree/jquery.ztree.all.min.js"></script>
+<script src="../resources/sys/statics/plugins/My97DatePicker/WdatePicker.js"></script>
+<script src="../resources/sys/js/common.js"></script>
+</head>
+<body>
+<div id="rrapp">
+	<ul id="myTab" class="nav nav-tabs">
+   		<li class="active"><a href="#opc" data-toggle="tab" id="tabopc" onclick="changeToOPC()">OPC协议</a></li>
+   		<!-- <li><a href="#s7" data-toggle="tab" id="tabs7" onclick="changeToS7()">S7协议</a></li> -->
+   		<li><a href="#modbus" data-toggle="tab" id="tabmodbus" onclick="changeToMODBUS()">MODBUS协议</a></li>
+   		<!-- <li><a href="#cip" data-toggle="tab" id="tabcip" onclick="changeToCIP()">CIP协议</a></li> -->
+   		<li><a href="#icmp" data-toggle="tab" id="tabicmp" onclick="changeToICMP()">ICMP协议</a></li>
+   		<li><a href="#tcp" data-toggle="tab" id="tabtcp" onclick="changeToTCP()">TCP协议</a></li>
+   		<li><a href="#udp" data-toggle="tab" id="tabudp" onclick="changeToUDP()">UDP协议</a></li>
+	</ul>
+	
+	<p></p>
+	
+	<div id="myTabContent" class="tab-content" style="margin-top: 20px">
+			<div class="tab-pane fade in active" id="opc">
+				<div class="grid-btn">
+					<div class="form-inline" role="form">
+
+						<button id="" class="btn btn-info btn-2x"
+							@click="openOPCInsert">
+							<span class="glyphicon glyphicon-plus"></span> 新增
+						</button>
+						<button id="" class="btn btn-danger btn-2x" @click="deleteOPCrule">
+							<span class="glyphicon glyphicon-trash"></span> 删除
+						</button>
+
+						<div class="form-group">
+							<label>规则名称：</label> <input type="text" class="form-control"
+							id="opcRuleName" maxlength="10" placeholder="不输入默认搜索所有">
+						</div>
+
+						<button id="" class="btn btn-info btn-2x" @click="searchOPCrule">
+							<span class="glyphicon glyphicon-search"></span> 搜索
+						</button>
+
+				</div>
+			</div>
+    		
+    		<div class="modal fade" id="opcModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    		<div class="modal-dialog">
+        		<div class="modal-content">
+            		<div class="modal-header">
+                		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    		&times;
+                		</button>
+                		<h4 class="modal-title" id="myModalLabel">
+                    		{{title}}
+                		</h4>
+            		</div>
+           			<div class="modal-body">
+           				<p>
+                    		<label for="">规则名称：</label>
+                    		<input type="text" id="addOPCmodalRuleName" class="form-control treeBox" v-model="opcRule.ruleName">
+                		</p>
+                		<p>
+                    		<label for="">源IP：</label>
+                    		<input type="text" id="addOPCmodalOriginIP" class="form-control treeBox" v-model="opcRule.originIP">
+                		</p>
+                		<p>
+                    		<label for="">目的IP：</label>
+                    		<input type="text" id="addOPCmodalGoalIP" class="form-control treeBox" v-model="opcRule.goalIP">
+                		</p>
+                		<p>
+                    		<label for="">传输层协议：</label>
+                    		<input type="text" id="addOPCmodalProtocol" value="TCP" class="form-control" placeholder="TCP" disabled v-model="opcRule.protocol">
+                		</p>
+                		<p>
+                    		<label for="">接口：</label>
+							<select id="addOPCmodalInterfaces" class="form-control" v-model="opcRule.interfaces">
+								<option value="">请选择</option>
+								<option value="IOPCAsynclO3">IOPCAsynclO3</option>
+								<option value="IOPCServerList">IOPCServerList</option>
+								<option value="IOPCHDA_Server">IOPCHDA_Server</option>
+								<option value="IOPCHDA_Browser">IOPCHDA_Browser</option>
+								<option value="IOPCHDA_SyncReader">IOPCHDA_SyncReader</option>
+							</select>
+                		</p>
+                		<p>
+                    		<label for="name">方法：</label>
+							<select id="addOPCmodalMethod" class="form-control" v-model="opcRule.method">
+								<option value="">请选择</option>
+								<option value="ReaderMaxAge">ReaderMaxAge</option>
+								<option value="WriterVQT">WriterVQT</option>
+								<option value="RefreshMaxAge">RefreshMaxAge</option>
+							</select>
+                		</p>
+            		</div>
+            		<div class="modal-footer">
+            			<button class="btn btn-default" @click="resetOPC">重置
+                		</button>
+                		<button class="btn btn-default" @click="insertOrUpdateOPC">确定
+                		</button>
+            		</div>
+        		</div><!-- /.modal-content -->
+    		</div><!-- /.modal -->
+			</div>
+    	</div>
+   		<div class="tab-pane fade" id="s7">
+      		<div class="grid-btn">
+					<div class="form-inline" role="form">
+
+						<button id="" class="btn btn-info btn-2x"
+							@click="openS7Insert">
+							<span class="glyphicon glyphicon-plus"></span> 新增
+						</button>
+						<button id="" class="btn btn-danger btn-2x" @click="deleteS7rule">
+							<span class="glyphicon glyphicon-trash"></span> 删除
+						</button>
+
+						<div class="form-group">
+							<label>规则名称：</label> <input type="text" class="form-control"
+							id="s7RuleName" maxlength="10" placeholder="不输入默认搜索所有">
+						</div>
+
+						<button id="" class="btn btn-info btn-2x" @click="searchS7rule">
+							<span class="glyphicon glyphicon-search"></span> 搜索
+						</button>
+
+				</div>
+			</div>
+    		
+    		<div class="modal fade" id="s7Modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    		<div class="modal-dialog">
+        		<div class="modal-content">
+            		<div class="modal-header">
+                		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    		&times;
+                		</button>
+                		<h4 class="modal-title" id="myModalLabel">
+                    		{{title}}
+                		</h4>
+            		</div>
+           			<div class="modal-body">
+           				<p>
+                    		<label for="">规则名称：</label>
+                    		<input type="text" id="addS7modalRuleName" class="form-control treeBox" v-model="s7Rule.ruleName">
+                		</p>
+                		<p>
+                    		<label for="">源IP：</label>
+                    		<input type="text" id="addS7modalOriginIP" class="form-control treeBox" v-model="s7Rule.originIP">
+                		</p>
+                		<p>
+                    		<label for="">目的IP：</label>
+                    		<input type="text" id="addS7modalGoalIP" class="form-control treeBox" v-model="s7Rule.goalIP">
+                		</p>
+                		<p>
+                    		<label for="">源IP掩码：</label>
+                    		<input type="text" id="addS7modalOriginIPmac" class="form-control treeBox" v-model="s7Rule.originIPmac">
+                		</p>
+                		<p>
+                    		<label for="">目的IP掩码：</label>
+                    		<input type="text" id="addS7modalGoalIPmac" class="form-control treeBox" v-model="s7Rule.goalIPmac">
+                		</p>
+                		<p>
+                    		<label for="">读写属性：</label>
+							<select id="addS7modalReadwriteAttr" class="form-control" v-model="s7Rule.readwriteAttr">
+								<option value="">请选择</option>
+								<option value="read">读</option>
+								<option value="write">写</option>
+							</select>
+                		</p>
+                		<p>
+                    		<label for="name">寄存器区：</label>
+							<select id="addS7modalRegisterArea" class="form-control" v-model="s7Rule.registerArea">
+								<option value="">请选择</option>
+								<option value="DB">DB区</option>
+								<option value="C">C区</option>
+								<option value="T">T区</option>
+								<option value="Q">Q区</option>
+								<option value="I">I区</option>
+								<option value="P">P区</option>
+							</select>
+                		</p>
+                		<p>
+                    		<label for="">DB区区号：</label>
+                    		<input type="text" id="addS7modalDBAreaNum" class="form-control treeBox" v-model="s7Rule.dbAreaNum">
+                		</p>
+                		<p>
+                    		<label for="name">点类型：</label>
+							<select id="addS7modalPointType" class="form-control" v-model="s7Rule.pointType">
+								<option value="">请选择</option>
+								<option value="S7WLBit">1S7WLBit</option>
+								<option value="S7WLByte">S7WLByte</option>
+								<option value="S7WLChar">S7WLChar</option>
+								<option value="S7WLWord">S7WLWord</option>
+								<option value="S7WLInt">S7WLInt</option>
+								<option value="S7WLDWord">S7WLDWord</option>
+							</select>
+                		</p>
+                		<p>
+                    		<label for="">起始地址：</label>
+                    		<input type="text" id="addS7modalInitialAddr" class="form-control treeBox" v-model="s7Rule.initialAddr">
+                		</p>
+                		<p>
+                    		<label for="">结束地址：</label>
+                    		<input type="text" id="addS7modalEndAddr" class="form-control treeBox" v-model="s7Rule.endAddr">
+                		</p>
+                		<p>
+                    		<label for="">传输层协议：</label>
+                    		<input type="text" id="addS7modalProtocol" value="TCP" class="form-control" placeholder="TCP" disabled v-model="s7Rule.protocol">
+                		</p>
+            		</div>
+            		<div class="modal-footer">
+            			<button class="btn btn-default" @click="resetS7">重置
+                		</button>
+                		<button class="btn btn-default" @click="insertOrUpdateS7">确定
+                		</button>
+            		</div>
+        		</div><!-- /.modal-content -->
+    		</div><!-- /.modal -->
+			</div>
+   		</div>
+   		<div class="tab-pane fade" id="modbus">
+      		<div class="grid-btn">
+					<div class="form-inline" role="form">
+
+						<button id="" class="btn btn-info btn-2x"
+							@click="openMODBUSInsert">
+							<span class="glyphicon glyphicon-plus"></span> 新增
+						</button>
+						<button id="" class="btn btn-danger btn-2x" @click="deleteMODBUSrule">
+							<span class="glyphicon glyphicon-trash"></span> 删除
+						</button>
+
+						<div class="form-group">
+							<label>规则名称：</label> <input type="text" class="form-control"
+							id="modbusRuleName" maxlength="10" placeholder="不输入默认搜索所有">
+						</div>
+
+						<button id="" class="btn btn-info btn-2x" @click="searchMODBUSrule">
+							<span class="glyphicon glyphicon-search"></span> 搜索
+						</button>
+
+				</div>
+			</div>
+    		
+    		<div class="modal fade" id="modbusModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    		<div class="modal-dialog">
+        		<div class="modal-content">
+            		<div class="modal-header">
+                		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    		&times;
+                		</button>
+                		<h4 class="modal-title" id="myModalLabel">
+                    		{{title}}
+                		</h4>
+            		</div>
+           			<div class="modal-body">
+           				<p>
+                    		<label for="">规则名称：</label>
+                    		<input type="text" id="addMODBUSmodalRuleName" class="form-control treeBox" v-model="modbusRule.ruleName">
+                		</p>
+                		<p>
+                    		<label for="">源IP：</label>
+                    		<input type="text" id="addMODBUSmodalOriginIP" class="form-control treeBox" v-model="modbusRule.originIP">
+                		</p>
+                		<p>
+                    		<label for="">目的IP：</label>
+                    		<input type="text" id="addMODBUSmodalGoalIP" class="form-control treeBox" v-model="modbusRule.goalIP">
+                		</p>
+                		<p>
+                    		<label for="">源IP掩码：</label>
+                    		<input type="text" id="addMODBUSmodalOriginIPmac" class="form-control treeBox" v-model="modbusRule.originIPmac">
+                		</p>
+                		<p>
+                    		<label for="">目的IP掩码：</label>
+                    		<input type="text" id="addMODBUSmodalGoalIPmac" class="form-control treeBox" v-model="modbusRule.goalIPmac">
+                		</p>
+                		<p>
+                    		<label for="">功能码：</label>
+							<select id="addMODBUSmodalFunctionCode" class="form-control" v-model="modbusRule.functionCode">
+								<option value="">请选择</option>
+								<option value="01 Read Coils">01 Read Coils</option>
+								<option value="02 Read Discrete Inputs">02 Read Discrete Inputs</option>
+								<option value="03 Read Holding Registers">03 Read Holding Registers</option>
+								<option value="04 Read Input Registers">04 Read Input Registers</option>
+								<option value="05 Write Single Register">05 Write Single Register</option>
+								<option value="06 Write Multiple Coils">06 Write Multiple Coils</option>
+							</select>
+                		</p>
+                		<p>
+                    		<label for="">起始地址：</label>
+                    		<input type="text" id="addMODBUSmodalInitialAddr" class="form-control treeBox" v-model="modbusRule.initialAddr">
+                		</p>
+                		<p>
+                    		<label for="">结束地址：</label>
+                    		<input type="text" id="addMODBUSmodalEndAddr" class="form-control treeBox" v-model="modbusRule.endAddr">
+                		</p>
+                		<p>
+                    		<label for="">传输层协议：</label>
+                    		<input type="text" id="addMODBUSmodalProtocol" value="TCP" class="form-control" placeholder="TCP" disabled v-model="modbusRule.protocol">
+                		</p>
+            		</div>
+            		<div class="modal-footer">
+            			<button class="btn btn-default" @click="resetMODBUS">重置
+                		</button>
+                		<button class="btn btn-default" @click="insertOrUpdateMODBUS">确定
+                		</button>
+            		</div>
+        		</div><!-- /.modal-content -->
+    		</div><!-- /.modal -->
+			</div>
+   		</div>
+   		<div class="tab-pane fade" id="cip">
+      		<div class="grid-btn">
+					<div class="form-inline" role="form">
+
+						<button id="" class="btn btn-info btn-2x"
+							@click="openCIPInsert">
+							<span class="glyphicon glyphicon-plus"></span> 新增
+						</button>
+						<button id="" class="btn btn-danger btn-2x" @click="deleteCIPrule">
+							<span class="glyphicon glyphicon-trash"></span> 删除
+						</button>
+
+						<div class="form-group">
+							<label>规则名称：</label> <input type="text" class="form-control"
+							id="cipRuleName" maxlength="10" placeholder="不输入默认搜索所有">
+						</div>
+
+						<button id="" class="btn btn-info btn-2x" @click="searchCIPrule">
+							<span class="glyphicon glyphicon-search"></span> 搜索
+						</button>
+
+				</div>
+			</div>
+    		
+    		<div class="modal fade" id="cipModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    		<div class="modal-dialog">
+        		<div class="modal-content">
+            		<div class="modal-header">
+                		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    		&times;
+                		</button>
+                		<h4 class="modal-title" id="myModalLabel">
+                    		{{title}}
+                		</h4>
+            		</div>
+           			<div class="modal-body">
+           				<p>
+                    		<label for="">规则名称：</label>
+                    		<input type="text" id="addCIPmodalRuleName" class="form-control treeBox" v-model="cipRule.ruleName">
+                		</p>
+                		<p>
+                    		<label for="">源IP：</label>
+                    		<input type="text" id="addCIPmodalOriginIP" class="form-control treeBox" v-model="cipRule.originIP">
+                		</p>
+                		<p>
+                    		<label for="">目的IP：</label>
+                    		<input type="text" id="addCIPmodelGoalIP" class="form-control treeBox" v-model="cipRule.goalIP">
+                		</p>
+                		<p>
+                    		<label for="">源IP掩码：</label>
+                    		<input type="text" id="addCIPmodalOriginIPmac" class="form-control treeBox" v-model="cipRule.originIPmac">
+                		</p>
+                		<p>
+                    		<label for="">目的IP掩码：</label>
+                    		<input type="text" id="addCIPmodalGoalIPmac" class="form-control treeBox" v-model="cipRule.goalIPmac">
+                		</p>
+                		<p>
+                    		<label for="">功能码：</label>
+							<select id="addCIPmodalFunctionCode" class="form-control" v-model="cipRule.functionCode">
+								<option value="">请选择</option>
+								<option value="get_att_all">get_att_all</option>
+								<option value="set_att_all">set_att_all</option>
+								<option value="get_att_list">get_att_list</option>
+								<option value="set_att_list">set_att_list</option>
+								<option value="reset">reset</option>
+								<option value="start">start</option>
+							</select>
+                		</p>
+                		<p>
+                    		<label for="">点名：</label>
+                    		<input type="text" id="addCIPmodalPointName" class="form-control treeBox" v-model="cipRule.pointName">
+                		</p>
+                		<p>
+                    		<label for="">点类型：</label>
+							<select id="addCIPmodalPointType" class="form-control" v-model="cipRule.pointType">
+								<option value="">请选择</option>
+								<option value="singlePoint">单点</option>
+								<option value="arrayPoint">数组点</option>
+							</select>
+                		</p>
+                		<p>
+                    		<label for="">起始地址：</label>
+                    		<input type="text" id="addCIPmodalInitialAddr" class="form-control treeBox" v-model="cipRule.initialAddr">
+                		</p>
+                		<p>
+                    		<label for="">结束地址：</label>
+                    		<input type="text" id="addCIPmodalEndAddr" class="form-control treeBox" v-model="cipRule.endAddr">
+                		</p>
+                		<p>
+                    		<label for="">传输层协议：</label>
+                    		<input type="text" id="addCIPmodalProtocol" value="TCP" class="form-control" placeholder="TCP" disabled v-model="cipRule.protocol">
+                		</p>
+            		</div>
+            		<div class="modal-footer">
+            			<button class="btn btn-default" @click="resetCIP">重置
+                		</button>
+                		<button class="btn btn-default" @click="insertOrUpdateCIP">确定
+                		</button>
+            		</div>
+        		</div><!-- /.modal-content -->
+    		</div><!-- /.modal -->
+			</div>
+   		</div>
+   		<div class="tab-pane fade" id="icmp">
+      		<div class="grid-btn">
+					<div class="form-inline" role="form">
+
+						<button id="" class="btn btn-info btn-2x"
+							@click="openICMPInsert">
+							<span class="glyphicon glyphicon-plus"></span> 新增
+						</button>
+						<button id="" class="btn btn-danger btn-2x" @click="deleteICMPrule">
+							<span class="glyphicon glyphicon-trash"></span> 删除
+						</button>
+
+						<div class="form-group">
+							<label>规则名称：</label> <input type="text" class="form-control"
+							id="icmpRuleName" maxlength="10" placeholder="不输入默认搜索所有">
+						</div>
+
+						<button id="" class="btn btn-info btn-2x" @click="searchICMPrule">
+							<span class="glyphicon glyphicon-search"></span> 搜索
+						</button>
+
+					</div>
+			</div>
+    		
+    		<div class="modal fade" id="icmpModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    		<div class="modal-dialog">
+        		<div class="modal-content">
+            		<div class="modal-header">
+                		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    		&times;
+                		</button>
+                		<h4 class="modal-title" id="myModalLabel">
+                    		{{title}}
+                		</h4>
+            		</div>
+           			<div class="modal-body">
+           				<p>
+                    		<label for="">规则名称：</label>
+                    		<input type="text" id="addICMPmodalRuleName" class="form-control treeBox" v-model="icmpRule.ruleName">
+                		</p>
+                		<p>
+                    		<label for="">源IP：</label>
+                    		<input type="text" id="addICMPmodalOriginIP" class="form-control treeBox" v-model="icmpRule.originIP">
+                		</p>
+                		<p>
+                    		<label for="">目的IP：</label>
+                    		<input type="text" id="addICMPmodalGoalIP" class="form-control treeBox" v-model="icmpRule.goalIP">
+                		</p>
+                		<p>
+                    		<label for="">源IP掩码：</label>
+                    		<input type="text" id="addICMPmodalOriginIPmac" class="form-control treeBox" v-model="icmpRule.originIPmac">
+                		</p>
+                		<p>
+                    		<label for="">目的IP掩码：</label>
+                    		<input type="text" id="addICMPmodalGoalIPmac" class="form-control treeBox" v-model="icmpRule.goalIPmac">
+                		</p>
+            		</div>
+            		<div class="modal-footer">
+            			<button class="btn btn-default" @click="resetICMP">重置
+                		</button>
+                		<button class="btn btn-default" @click="insertOrUpdateICMP">确定
+                		</button>
+            		</div>
+        		</div><!-- /.modal-content -->
+    		</div><!-- /.modal -->
+			</div>
+   		</div>
+   		<div class="tab-pane fade" id="tcp">
+      		<div class="grid-btn">
+					<div class="form-inline" role="form">
+
+						<button id="" class="btn btn-info btn-2x"
+							@click="openTCPInsert">
+							<span class="glyphicon glyphicon-plus"></span> 新增
+						</button>
+						<button id="" class="btn btn-danger btn-2x" @click="deleteTCPrule">
+							<span class="glyphicon glyphicon-trash"></span> 删除
+						</button>
+
+						<div class="form-group">
+							<label>规则名称：</label> <input type="text" class="form-control"
+							id="tcpRuleName" maxlength="10" placeholder="不输入默认搜索所有">
+						</div>
+
+						<button id="" class="btn btn-info btn-2x" @click="searchTCPrule">
+							<span class="glyphicon glyphicon-search"></span> 搜索
+						</button>
+
+					</div>
+			</div>
+    		
+    		<div class="modal fade" id="tcpModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    		<div class="modal-dialog">
+        		<div class="modal-content">
+            		<div class="modal-header">
+                		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    		&times;
+                		</button>
+                		<h4 class="modal-title" id="myModalLabel">
+                    		{{title}}
+                		</h4>
+            		</div>
+           			<div class="modal-body">
+           				<p>
+                    		<label for="">规则名称：</label>
+                    		<input type="text" id="addTCPmodalRuleName" class="form-control treeBox" v-model="tcpRule.ruleName">
+                		</p>
+                		<p>
+                    		<label for="">源IP：</label>
+                    		<input type="text" id="addTCPmodalOriginIP" class="form-control treeBox" v-model="tcpRule.originIP">
+                		</p>
+                		<p>
+                    		<label for="">目的IP：</label>
+                    		<input type="text" id="addTCPmodalGoalIP" class="form-control treeBox" v-model="tcpRule.goalIP">
+                		</p>
+                		<p>
+                    		<label for="">源IP掩码：</label>
+                    		<input type="text" id="addTCPmodalOriginIPmac" class="form-control treeBox" v-model="tcpRule.originIPmac">
+                		</p>
+                		<p>
+                    		<label for="">目的IP掩码：</label>
+                    		<input type="text" id="addTCPmodalGoalIPmac" class="form-control treeBox" v-model="tcpRule.goalIPmac">
+                		</p>
+            		</div>
+            		<div class="modal-footer">
+            			<button class="btn btn-default" @click="resetTCP">重置
+                		</button>
+                		<button class="btn btn-default" @click="insertOrUpdateTCP">确定
+                		</button>
+            		</div>
+        		</div><!-- /.modal-content -->
+    		</div><!-- /.modal -->
+			</div>
+   		</div>
+   		<div class="tab-pane fade" id="udp">
+      		<div class="grid-btn">
+					<div class="form-inline" role="form">
+
+						<button id="" class="btn btn-info btn-2x"
+							@click="openUDPInsert">
+							<span class="glyphicon glyphicon-plus"></span> 新增
+						</button>
+						<button id="" class="btn btn-danger btn-2x" @click="deleteUDPrule">
+							<span class="glyphicon glyphicon-trash"></span> 删除
+						</button>
+
+						<div class="form-group">
+							<label>规则名称：</label> <input type="text" class="form-control"
+							id="udpRuleName" maxlength="10" placeholder="不输入默认搜索所有">
+						</div>
+
+						<button id="" class="btn btn-info btn-2x" @click="searchUDPrule">
+							<span class="glyphicon glyphicon-search"></span> 搜索
+						</button>
+
+					</div>
+			</div>
+    		
+    		<div class="modal fade" id="udpModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    		<div class="modal-dialog">
+        		<div class="modal-content">
+            		<div class="modal-header">
+                		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    		&times;
+                		</button>
+                		<h4 class="modal-title" id="myModalLabel">
+                    		{{title}}
+                		</h4>
+            		</div>
+           			<div class="modal-body">
+           				<p>
+                    		<label for="">规则名称：</label>
+                    		<input type="text" id="addUDPmodalRuleName" class="form-control treeBox" v-model="udpRule.ruleName">
+                		</p>
+                		<p>
+                    		<label for="">源IP：</label>
+                    		<input type="text" id="addUDPmodalOriginIP" class="form-control treeBox" v-model="udpRule.originIP">
+                		</p>
+                		<p>
+                    		<label for="">目的IP：</label>
+                    		<input type="text" id="addUDPmodalGoalIP" class="form-control treeBox" v-model="udpRule.goalIP">
+                		</p>
+                		<p>
+                    		<label for="">源IP掩码：</label>
+                    		<input type="text" id="addUDPmodalOriginIPmac" class="form-control treeBox" v-model="udpRule.originIPmac">
+                		</p>
+                		<p>
+                    		<label for="">目的IP掩码：</label>
+                    		<input type="text" id="addUDPmodalGoalIPmac" class="form-control treeBox" v-model="udpRule.goalIPmac">
+                		</p>
+            		</div>
+            		<div class="modal-footer">
+            			<button class="btn btn-default" @click="resetUDP">重置
+                		</button>
+                		<button class="btn btn-default" @click="insertOrUpdateUDP">确定
+                		</button>
+            		</div>
+        		</div><!-- /.modal-content -->
+    		</div><!-- /.modal -->
+			</div>
+   		</div>
+   		
+   		<table id="jqGrid"></table>
+    	<div id="jqGridPager"></div>
+   		
+   </div>
+</div>
+
+<script src="../resources/sys/js/sys/whitelistRule.js"></script>
+</body>
+</html>

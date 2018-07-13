@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jms="http://www.springframework.org/schema/jms"
+	xsi:schemaLocation="
+          http://www.springframework.org/schema/beans 
+          http://www.springframework.org/schema/beans/spring-beans.xsd
+          http://www.springframework.org/schema/jms
+          http://www.springframework.org/schema/jms/spring-jms-4.0.xsd">
+	<bean id="myConnectionFactory"
+		class="org.springframework.jms.connection.CachingConnectionFactory">
+		<!-- Session缓存数量 -->
+		<property name="sessionCacheSize" value="20" />
+		<property name="targetConnectionFactory">
+			<bean class="org.apache.activemq.ActiveMQConnectionFactory">
+				<!-- MQ地址 -->
+
+				<property name="brokerURL" value="tcp://192.168.2.9:61616" />
+
+				<!-- 是否异步发送 -->
+				<property name="useAsyncSend" value="true" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="WebLoggerTopicDestination" class="org.apache.activemq.command.ActiveMQTopic">
+		<!-- 设置消息主题的名字 -->
+		<constructor-arg index="0" value="Online.Notice.Topic.WebLogger" />
+	</bean>
+	<!-- 发送消息的目的地（一个主题） -->
+	<bean id="SystemLoggerTopicDestination" class="org.apache.activemq.command.ActiveMQTopic">
+		<!-- 设置消息主题的名字 -->
+		<constructor-arg index="0"
+			value="Online.Notice.Topic.SystemLogger" />
+	</bean>
+
+
+	<!-- 发送消息的目的地（一个主题） -->
+	<bean id="errorLoggerTopicDestination" class="org.apache.activemq.command.ActiveMQTopic">
+		<!-- 设置消息主题的名字 -->
+		<constructor-arg index="0"
+			value="Online.Notice.Topic.Error.Logger" />
+	</bean>
+	<!-- 发送消息的目的地（一个主题） -->
+	<bean id="sendEmailTopic" class="org.apache.activemq.command.ActiveMQTopic">
+		<!-- 设置消息主题的名字 -->
+		<constructor-arg index="0" value="Online.Notice.Topic.Email" />
+	</bean>
+	<!-- 配置JMS模版 -->
+	<bean id="myJmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+		<property name="connectionFactory" ref="myConnectionFactory" />
+		<property name="defaultDestination" ref="errorLoggerTopicDestination" />
+		<!-- 订阅发布模式 -->
+		<property name="pubSubDomain" value="true" />
+		<property name="receiveTimeout" value="10000" />
+	</bean>
+	<!-- 定义Topic监听器 -->
+	<!-- <jms:listener-container destination-type="topic" container-type="default" 
+		connection-factory="connectionFactory" acknowledge="auto"> <jms:listener 
+		destination="errorLoggerTopicDestination" ref="com.hzdy.logger.errorLoggertopicReceiver" 
+		/> </jms:listener-container> -->
+	<!-- 消息监听器，主要监听的目的地址 Message Receiver Definition -->
+	<bean id="emailMessageListener" class="com.hzdy.logger.EmailMessageListener">
+	</bean>
+
+	<bean id="WebLoggerMessageListener" class="com.hzdy.logger.WebLoggerMessageListener">
+	</bean>
+	<bean id="SystemLoggerMessageListener" class="com.hzdy.logger.SystemLoggerMessageListener">
+	</bean>
+
+
+	<bean
+		class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+		<property name="connectionFactory" ref="myConnectionFactory" />
+		<property name="destination" ref="sendEmailTopic" />
+		<property name="messageListener" ref="emailMessageListener" />
+	</bean>
+
+	<bean
+		class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+		<property name="connectionFactory" ref="myConnectionFactory" />
+		<property name="destination" ref="WebLoggerTopicDestination" />
+		<property name="messageListener" ref="WebLoggerMessageListener" />
+	</bean>
+	<bean
+		class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+		<property name="connectionFactory" ref="myConnectionFactory" />
+		<property name="destination" ref="SystemLoggerTopicDestination" />
+		<property name="messageListener" ref="SystemLoggerMessageListener" />
+	</bean>
+</beans>

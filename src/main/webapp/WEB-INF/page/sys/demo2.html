@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>系统监测</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+	name="viewport">
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+	name="viewport">
+<link rel="stylesheet"
+	href="../resources/sys/statics/css/bootstrap.min.css">
+<link rel="stylesheet"
+	href="../resources/sys/statics/css/font-awesome.min.css">
+<link rel="stylesheet"
+	href="../resources/sys/statics/plugins/jqgrid/ui.jqgrid-bootstrap.css">
+<link rel="stylesheet"
+	href="../resources/sys/statics/plugins/ztree/css/metroStyle/metroStyle.css">
+<link rel="stylesheet" href="../resources/sys/statics/css/main.css">
+<script src="../resources/sys/statics/libs/jquery.min.js"></script>
+<script src="../resources/sys/statics/plugins/layer/layer.js"></script>
+<script src="../resources/sys/statics/libs/bootstrap.min.js"></script>
+<script src="../resources/sys/statics/libs/FileSaver.js"></script>
+<script src="../resources/sys/statics/plugins/jqgrid/grid.locale-cn.js"></script>
+<script
+	src="../resources/sys/statics/plugins/jqgrid/jquery.jqGrid.min.js"></script>
+<script src="../resources/sys/js/common.js"></script>
+<script src="../resources/sys/statics/libs/jquery.min.js"></script>
+<script src="../resources/sys/statics/libs/chart.js"></script>
+<script src="../resources/sys/statics/libs/vue.min.js"></script>
+<script>
+	$(document).ready(function() {
+
+	});
+</script>
+</head>
+<body>
+	<div id="rrapp">
+		<div class="grid-btn"></div>
+		<div>
+			<canvas id="myChart" width="400" height="400"></canvas>
+		</div>
+	</div>
+	<script>
+		var ctx = document.getElementById("myChart").getContext('2d');
+		var myChart = new Chart(ctx,
+				{
+					type : 'bar',
+					data : {
+						labels : [ "Red", "Blue", "Yellow", "Green", "Purple",
+								"Orange" ],
+						datasets : [ {
+							label : '# of Votes',
+							data : [ 23, 19, 3, 5, 2, 3 ],
+							backgroundColor : [ 'rgba(255,99,132.0.2)',
+									'rgba(54,162,235.0.2)',
+									'rgba(255,206,862.0.2)',
+									'rgba(75,192,192.0.2)',
+									'rgba(153,102,255.0.2)',
+									'rgba(255,159,64.0.2)', ],
+							borderWidth : 1
+						} ]
+					},
+					options : {
+						scales : {
+							yAxes : [ {
+								ticks : {
+									beginAtZero : true
+								}
+							} ]
+						}
+					}
+				});
+	</script>
+</body>
+</html>

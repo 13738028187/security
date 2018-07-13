@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>关键事件</title>
+#parse("sys/header.html")
+</head>
+<body>
+	<div id="rrapp">
+		<div class="grid-btn">
+			<div class="form-inline" role="form">
+				<a href="javascript:;" class="btn btn-info btn-2x"
+					@click="showInsert"> <span class="glyphicon glyphicon-plus"></span> 新增
+				
+				</a> 
+				<a href="javascript:;" class="btn btn-danger btn-2x"
+					@click="deleted"> <span class="glyphicon glyphicon-trash"></span> 删除
+				</a>
+
+				<div class="form-group">
+					<label>策略名称：</label> <input type="text" class="form-control"
+						id="ruleName" maxlength="18" placeholder="不输入默认搜索所有">
+				</div>
+
+				<a href="javascript:;" class="btn btn-info btn-2x" @click="searcher">
+					<span class="glyphicon glyphicon-search"></span> 搜索
+				</a>
+
+			</div>
+		</div>
+		<table id="jqGrid"></table>
+		<div id="jqGridPager"></div>
+		
+		<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    		<div class="modal-dialog">
+        		<div class="modal-content">
+            		<div class="modal-header">
+                		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    		&times;
+                		</button>
+                		<h4 class="modal-title" id="myModalLabel">
+                    		{{title}}
+                		</h4>
+            		</div>
+           			<div class="modal-body">
+           				<p>
+                    		<label for="">策略名称：</label>
+                    		<input type="text" class="form-control treeBox" maxlength="18" v-model="keyEvents.ruleName">
+                		</p>
+                		<p>
+                    		<label for="">源IP：</label>
+                    		<input type="text" class="form-control treeBox" maxlength="18" v-model="keyEvents.originIp">
+                		</p>
+                		<p>
+                    		<label for="">目的IP：</label>
+                    		<input type="text" class="form-control treeBox" maxlength="18" v-model="keyEvents.goalIp">
+                		</p>
+                		<p>
+                    		<label for="">源IP掩码：</label>
+                    		<input type="text" class="form-control treeBox" maxlength="18" v-model="keyEvents.originIpMask">
+                		</p>
+                		<p>
+                    		<label for="">目的IP掩码：</label>
+                    		<input type="text" class="form-control treeBox" maxlength="18" v-model="keyEvents.goalIpMask">
+                		</p>
+            		</div>
+            		<div class="modal-footer">
+						<button type="button" class="btn btn-default" @click="reset">重置</button>
+						<button type="button" class="btn btn-default" @click="insertOrUpdate">确定</button>
+					</div>
+				</div>
+        		</div><!-- /.modal-content -->
+    		</div><!-- /.modal -->
+			</div>
+	</div>
+
+	<script src="../resources/sys/js/sys/keyEvents.js"></script>
+</body>
+</html>

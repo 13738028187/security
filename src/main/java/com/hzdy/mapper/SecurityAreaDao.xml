@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hzdy.dao.SecurityAreaDao">
+
+	<resultMap type="com.hzdy.entity.SecurityArea" id="SecurityAreaMap">
+		<id property="id" column="id" />
+		<result property="name" column="name" />
+		<result property="level" column="level" />
+		<result property="size" column="size" />
+	</resultMap>
+
+	<select id="queryList" parameterType="Map" resultMap="SecurityAreaMap">
+		select hzdy_securityarea.id,hzdy_securityarea.name,hzdy_securityarea.level,count(hzdy_securityarea_interface.securityarea_id) as 'size'
+		from hzdy_securityarea left join hzdy_securityarea_interface on hzdy_securityarea_interface.securityarea_id = hzdy_securityarea.id
+		group by hzdy_securityarea.id,hzdy_securityarea.name,hzdy_securityarea.level
+		<trim prefix="HAVING" prefixOverrides="AND|OR">
+			<if test="name !=null and name != ''">
+				AND hzdy_securityarea.name like CONCAT('%',#{name,jdbcType=VARCHAR},'%')
+			</if>
+			<if test="level !=null">
+				AND hzdy_securityarea.level = #{level}
+			</if>
+		</trim>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+
+	</select>
+
+	<select id="queryTotal" parameterType="Map" resultType="int">
+		select count(*) from hzdy_securityarea
+		<trim prefix="WHERE" prefixOverrides="AND|OR">
+			<if test="name !=null and name != ''">
+				AND name like CONCAT('%',#{name,jdbcType=VARCHAR},'%')
+			</if>
+			<if test="level !=null">
+				AND level = #{level}
+			</if>
+		</trim>
+
+	</select>
+
+	<select id="querySecurityAreaById" parameterType="Integer"
+		resultType="com.hzdy.entity.SecurityArea">
+		select * from hzdy_securityarea where id = #{id}
+	</select>
+
+	<delete id="delete" parameterType="int">
+		delete from hzdy_securityarea
+		where id = #{id}
+	</delete>
+
+	<insert id="insert" parameterType="com.hzdy.entity.SecurityArea">
+		insert into hzdy_securityarea
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="name != null and name != ''">
+				name,
+			</if>
+			<if test="level != null and level != 0">
+				level,
+			</if>
+			<if test="size != null and size != 0">
+				size,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+
+			<if test="name != null and name != ''">
+				#{name,jdbcType=VARCHAR},
+			</if>
+			<if test="level != null and level != 0">
+				#{level,jdbcType=INTEGER},
+			</if>
+			<if test="size != null and size != 0">
+				#{size,jdbcType=INTEGER},
+			</if>
+		</trim>
+	</insert>
+
+	<update id="update" parameterType="com.hzdy.entity.SecurityArea">
+		update hzdy_securityarea
+		<set>
+			<if test="name != null and name != ''">
+				name=#{name,jdbcType=VARCHAR},
+			</if>
+			<if test="level != null and level != 0">
+				level=#{level,jdbcType=INTEGER},
+			</if>
+			<if test="size != null and size != 0">
+				size=#{size,jdbcType=INTEGER},
+			</if>
+		</set>
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	
+	<resultMap type="com.hzdy.entity.SecurityAreaDevice" id="devicemap">
+		<id property="deviceId" column="device_id"/>
+		<result property="deviceName" column="device_name"/>
+		<result property="deviceNumber" column="device_number"/>
+		<result property="deviceIP" column="device_ip"/>
+		<result property="deviceInterface" column="device_interface"/>
+		<result property="securityAreaId" column="securityarea_id"/>
+	</resultMap>
+	
+	<select id="queryDevices" parameterType="Map" resultMap="devicemap">
+		select * from hzdy_securityarea_device where securityarea_id = #{securityAreaId}
+		<if test="deviceName !=null and deviceName != ''">
+			and device_name like CONCAT('%',#{deviceName,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+	<select id="queryDeviceTotal" parameterType="Map" resultType="Integer">
+		select count(*) from hzdy_securityarea_device where securityarea_id = #{param}
+		<if test="deviceName !=null and deviceName != ''">
+			and device_name like CONCAT('%',#{deviceName,jdbcType=VARCHAR},'%')
+		</if>
+	</select>
+	
+	<select id="queryDeviceInterfaceById" parameterType="Map" resultMap="devicemap">
+		select * from hzdy_securityarea_device where device_name = #{deviceName} and securityarea_id != #{securityAreaId}
+	</select>
+	
+	<select id="checkDuplication1" parameterType="com.hzdy.entity.SecurityAreaDevice" resultType="com.hzdy.entity.SecurityAreaDevice">
+		select * from hzdy_securityarea_device where (device_name = #{deviceName} or device_number = #{deviceNumber} or device_ip = #{deviceIP}) and securityarea_id = #{securityAreaId}
+	</select>
+	
+	<select id="checkDuplication2" parameterType="com.hzdy.entity.SecurityAreaDevice" resultType="com.hzdy.entity.SecurityAreaDevice">
+		select * from hzdy_securityarea_device where (device_name = #{deviceName} or device_number = #{deviceNumber} or device_ip = #{deviceIP}) and securityarea_id != #{securityAreaId}
+		limit 1
+	</select>
+	
+	<update id="updateDeviceInterface">
+		update hzdy_securityarea_device set device_interface = #{deviceInterface}
+		where device_name = #{deviceName} and securityarea_id = #{securityAreaId}
+	</update>
+	
+	<insert id="insertDeviceInterface" useGeneratedKeys="true" keyProperty="device_id">
+		insert into hzdy_securityarea_device (device_name,device_number,device_ip,device_interface,securityarea_id)
+		values (#{deviceName},#{deviceNumber},#{deviceIP},#{deviceInterface},#{securityAreaId})
+	</insert>
+	
+	<delete id="deleteDeviceInterfaceByDeviceId" parameterType="Integer">
+		delete from hzdy_securityarea_device where device_id = #{param}
+	</delete>
+	
+	<delete id="deleteDeviceInterfaceBySecurityAreaId" parameterType="Integer">
+		delete from hzdy_securityarea_device where securityarea_id = #{param}
+	</delete>
+	
+	<select id="queryLevelById" parameterType="Integer" resultType="String">
+		select level from hzdy_securityarea where id = #{param}
+	</select>
+	
+</mapper>

@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hzdy.dao.WhitelistRuleDao">
+
+	<resultMap type="com.hzdy.entity.WhitelistRuleOPC" id="opcmap">
+		<id property="whitelistRuleOPCId" column="whitelistrule_opc_id"/>
+		<result property="ruleName" column="rule_name"/>
+		<result property="originIP" column="origin_ip"/>
+		<result property="goalIP" column="goal_ip"/>
+		<result property="protocol" column="protocol"/>
+		<result property="interfaces" column="interfaces"/>
+		<result property="method" column="method"/>
+	</resultMap>
+
+	<select id="queryOPCwhitelist" parameterType="Map" resultMap="opcmap">
+		select * from hzdy_whitelistrule_opc
+		<if test="ruleName !=null and ruleName != ''">
+			where rule_name like CONCAT('%',#{ruleName,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+	<select id="queryOPCtotal" parameterType="Map" resultType="Integer">
+		select count(*) from hzdy_whitelistrule_opc
+		<if test="ruleName !=null and ruleName != ''">
+			where rule_name like CONCAT('%',#{ruleName,jdbcType=VARCHAR},'%')
+		</if>
+	</select>
+	
+	<select id="checkOPCRuleDuplication" parameterType="com.hzdy.entity.WhitelistRuleOPC" resultType="com.hzdy.entity.WhitelistRuleOPC">
+		select * from hzdy_whitelistrule_opc where rule_name = #{ruleName} and whitelistrule_opc_id != #{whitelistRuleOPCId}
+	</select>
+	
+	<select id="queryOPCwhitelistById" parameterType="Integer" resultType="com.hzdy.entity.WhitelistRuleOPC">
+		select * from hzdy_whitelistrule_opc where whitelistrule_opc_id = #{param}
+	</select>
+	
+	<insert id="insertOPCwhitelist" parameterType="com.hzdy.entity.WhitelistRuleOPC" useGeneratedKeys="true" keyProperty="whitelistrule_opc_id">
+		insert into hzdy_whitelistrule_opc (rule_name,origin_ip,goal_ip,protocol,interfaces,method)
+		values (#{ruleName},#{originIP},#{goalIP},#{protocol},#{interfaces},#{method})
+	</insert>
+	
+	<delete id="deleteOPCwhitelist" parameterType="Integer">
+		delete from hzdy_whitelistrule_opc where whitelistrule_opc_id = #{param}
+	</delete>
+	
+	<update id="updateOPCwhitelist" parameterType="com.hzdy.entity.WhitelistRuleOPC">
+		update hzdy_whitelistrule_opc set rule_name = #{ruleName}, origin_ip = #{originIP}, goal_ip = #{goalIP}, protocol = #{protocol}, interfaces = #{interfaces}, method = #{method}
+		where whitelistrule_opc_id = #{whitelistRuleOPCId}
+	</update>
+	
+	<resultMap type="com.hzdy.entity.WhitelistRuleS7" id="s7map">
+		<id property="whitelistRuleS7Id" column="whitelistrule_s7_id"/>
+		<result property="ruleName" column="rule_name"/>
+		<result property="originIP" column="origin_ip"/>
+		<result property="goalIP" column="goal_ip"/>
+		<result property="originIPmac" column="origin_ip_mac"/>
+		<result property="goalIPmac" column="goal_ip_mac"/>
+		<result property="readwriteAttr" column="readwrite_attr"/>
+		<result property="registerArea" column="register_area"/>
+		<result property="dbAreaNum" column="db_area_num"/>
+		<result property="pointType" column="point_type"/>
+		<result property="initialAddr" column="initial_addr"/>
+		<result property="endAddr" column="end_addr"/>
+		<result property="protocol" column="protocol"/>
+	</resultMap>
+
+	<select id="queryS7whitelist" parameterType="Map" resultMap="s7map">
+		select * from hzdy_whitelistrule_s7
+		<if test="ruleName !=null and ruleName != ''">
+			where rule_name like CONCAT('%',#{ruleName,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+	<select id="queryS7total" parameterType="Map" resultType="Integer">
+		select count(*) from hzdy_whitelistrule_s7
+		<if test="ruleName !=null and ruleName != ''">
+			where rule_name like CONCAT('%',#{ruleName,jdbcType=VARCHAR},'%')
+		</if>
+	</select>
+	
+	<select id="checkS7RuleDuplication" parameterType="com.hzdy.entity.WhitelistRuleS7" resultType="com.hzdy.entity.WhitelistRuleS7">
+		select * from hzdy_whitelistrule_s7 where rule_name = #{ruleName} and whitelistrule_s7_id != #{whitelistRuleS7Id}
+	</select>
+	
+	<select id="queryS7whitelistById" parameterType="Integer" resultType="com.hzdy.entity.WhitelistRuleS7">
+		select * from hzdy_whitelistrule_s7 where whitelistrule_s7_id = #{param}
+	</select>
+	
+	<insert id="insertS7whitelist" parameterType="com.hzdy.entity.WhitelistRuleS7" useGeneratedKeys="true" keyProperty="whitelistrule_s7_id">
+		insert into hzdy_whitelistrule_s7 (rule_name,origin_ip,goal_ip,origin_ip_mac,goal_ip_mac,readwrite_attr,register_area,db_area_num,point_type,initial_addr,end_addr,protocol)
+		values (#{ruleName},#{originIP},#{goalIP},#{originIPmac},#{goalIPmac},#{readwriteAttr},#{registerArea},#{dbAreaNum},#{pointType},#{initialAddr},#{endAddr},#{protocol})
+	</insert>
+	
+	<delete id="deleteS7whitelist" parameterType="Integer">
+		delete from hzdy_whitelistrule_s7 where whitelistrule_s7_id = #{param}
+	</delete>
+	
+	<update id="updateS7whitelist" parameterType="com.hzdy.entity.WhitelistRuleS7">
+		update hzdy_whitelistrule_s7 
+		set rule_name = #{ruleName}, origin_ip = #{originIP}, goal_ip = #{goalIP}, origin_ip_mac = #{originIPmac}, goal_ip_mac = #{goalIPmac}, readwrite_attr = #{readwriteAttr}, register_area = #{registerArea}, db_area_num = #{dbAreaNum}, point_type = #{pointType}, initial_addr = #{initialAddr}, end_addr = #{endAddr}, protocol = #{protocol}
+		where whitelistrule_s7_id = #{whitelistRuleS7Id}
+	</update>
+	
+	<resultMap type="com.hzdy.entity.WhitelistRuleMODBUS" id="modbusmap">
+		<id property="whitelistRuleMODBUSId" column="whitelistrule_modbus_id"/>
+		<result property="ruleName" column="rule_name"/>
+		<result property="originIP" column="origin_ip"/>
+		<result property="goalIP" column="goal_ip"/>
+		<result property="originIPmac" column="origin_ip_mac"/>
+		<result property="goalIPmac" column="goal_ip_mac"/>
+		<result property="functionCode" column="function_code"/>
+		<result property="initialAddr" column="initial_addr"/>
+		<result property="endAddr" column="end_addr"/>
+		<result property="protocol" column="protocol"/>
+	</resultMap>
+
+	<select id="queryMODBUSwhitelist" parameterType="Map" resultMap="modbusmap">
+		select * from hzdy_whitelistrule_modbus
+		<if test="ruleName !=null and ruleName != ''">
+			where rule_name like CONCAT('%',#{ruleName,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+	<select id="queryMODBUStotal" parameterType="Map" resultType="Integer">
+		select count(*) from hzdy_whitelistrule_modbus
+		<if test="ruleName !=null and ruleName != ''">
+			where rule_name like CONCAT('%',#{ruleName,jdbcType=VARCHAR},'%')
+		</if>
+	</select>
+	
+	<select id="checkMODBUSRuleDuplication" parameterType="com.hzdy.entity.WhitelistRuleMODBUS" resultType="com.hzdy.entity.WhitelistRuleMODBUS">
+		select * from hzdy_whitelistrule_modbus where rule_name = #{ruleName} and whitelistrule_modbus_id != #{whitelistRuleMODBUSId}
+	</select>
+	
+	<select id="queryMODBUSwhitelistById" parameterType="Integer" resultType="com.hzdy.entity.WhitelistRuleMODBUS">
+		select * from hzdy_whitelistrule_modbus where whitelistrule_modbus_id = #{param}
+	</select>
+	
+	<insert id="insertMODBUSwhitelist" parameterType="com.hzdy.entity.WhitelistRuleMODBUS" useGeneratedKeys="true" keyProperty="whitelistrule_modbus_id">
+		insert into hzdy_whitelistrule_modbus (rule_name,origin_ip,goal_ip,origin_ip_mac,goal_ip_mac,function_code,initial_addr,end_addr,protocol)
+		values (#{ruleName},#{originIP},#{goalIP},#{originIPmac},#{goalIPmac},#{functionCode},#{initialAddr},#{endAddr},#{protocol})
+	</insert>
+	
+	<delete id="deleteMODBUSwhitelist" parameterType="Integer">
+		delete from hzdy_whitelistrule_modbus where whitelistrule_modbus_id = #{param}
+	</delete>
+	
+	<update id="updateMODBUSwhitelist" parameterType="com.hzdy.entity.WhitelistRuleMODBUS">
+		update hzdy_whitelistrule_modbus 
+		set rule_name = #{ruleName}, origin_ip = #{originIP}, goal_ip = #{goalIP}, origin_ip_mac = #{originIPmac}, goal_ip_mac = #{goalIPmac}, function_code = #{functionCode}, initial_addr = #{initialAddr}, end_addr = #{endAddr}, protocol = #{protocol}
+		where whitelistrule_modbus_id = #{whitelistRuleMODBUSId}
+	</update>
+	
+	<resultMap type="com.hzdy.entity.WhitelistRuleCIP" id="cipmap">
+		<id property="whitelistRuleCIPId" column="whitelistrule_cip_id"/>
+		<result property="ruleName" column="rule_name"/>
+		<result property="originIP" column="origin_ip"/>
+		<result property="goalIP" column="goal_ip"/>
+		<result property="originIPmac" column="origin_ip_mac"/>
+		<result property="goalIPmac" column="goal_ip_mac"/>
+		<result property="functionCode" column="function_code"/>
+		<result property="pointName" column="point_name"/>
+		<result property="pointType" column="point_type"/>
+		<result property="initialAddr" column="initial_addr"/>
+		<result property="endAddr" column="end_addr"/>
+		<result property="protocol" column="protocol"/>
+	</resultMap>
+
+	<select id="queryCIPwhitelist" parameterType="Map" resultMap="cipmap">
+		select * from hzdy_whitelistrule_cip
+		<if test="ruleName !=null and ruleName != ''">
+			where rule_name like CONCAT('%',#{ruleName,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+	<select id="queryCIPtotal" parameterType="Map" resultType="Integer">
+		select count(*) from hzdy_whitelistrule_cip
+		<if test="ruleName !=null and ruleName != ''">
+			where rule_name like CONCAT('%',#{ruleName,jdbcType=VARCHAR},'%')
+		</if>
+	</select>
+	
+	<select id="checkCIPRuleDuplication" parameterType="com.hzdy.entity.WhitelistRuleCIP" resultType="com.hzdy.entity.WhitelistRuleCIP">
+		select * from hzdy_whitelistrule_cip where rule_name = #{ruleName} and whitelistrule_cip_id != #{whitelistRuleCIPId}
+	</select>
+	
+	<select id="queryCIPwhitelistById" parameterType="Integer" resultType="com.hzdy.entity.WhitelistRuleCIP">
+		select * from hzdy_whitelistrule_cip where whitelistrule_cip_id = #{param}
+	</select>
+	
+	<insert id="insertCIPwhitelist" parameterType="com.hzdy.entity.WhitelistRuleCIP" useGeneratedKeys="true" keyProperty="whitelistrule_cip_id">
+		insert into hzdy_whitelistrule_cip (rule_name,origin_ip,goal_ip,origin_ip_mac,goal_ip_mac,function_code,point_name,point_type,initial_addr,end_addr,protocol)
+		values (#{ruleName},#{originIP},#{goalIP},#{originIPmac},#{goalIPmac},#{functionCode},#{pointName},#{pointType},#{initialAddr},#{endAddr},#{protocol})
+	</insert>
+	
+	<delete id="deleteCIPwhitelist" parameterType="Integer">
+		delete from hzdy_whitelistrule_cip where whitelistrule_cip_id = #{param}
+	</delete>
+	
+	<update id="updateCIPwhitelist" parameterType="com.hzdy.entity.WhitelistRuleCIP">
+		update hzdy_whitelistrule_cip 
+		set rule_name = #{ruleName}, origin_ip = #{originIP}, goal_ip = #{goalIP}, origin_ip_mac = #{originIPmac}, goal_ip_mac = #{goalIPmac}, function_code = #{functionCode}, point_name = #{pointName}, point_type = #{pointType}, initial_addr = #{initialAddr}, end_addr = #{endAddr}, protocol = #{protocol}
+		where whitelistrule_cip_id = #{whitelistRuleCIPId}
+	</update>
+	
+	<resultMap type="com.hzdy.entity.WhitelistRuleICMP" id="icmpmap">
+		<id property="whitelistRuleICMPId" column="whitelistrule_icmp_id"/>
+		<result property="ruleName" column="rule_name"/>
+		<result property="originIP" column="origin_ip"/>
+		<result property="goalIP" column="goal_ip"/>
+		<result property="originIPmac" column="origin_ip_mac"/>
+		<result property="goalIPmac" column="goal_ip_mac"/>
+	</resultMap>
+
+	<select id="queryICMPwhitelist" parameterType="Map" resultMap="icmpmap">
+		select * from hzdy_whitelistrule_icmp
+		<if test="ruleName !=null and ruleName != ''">
+			where rule_name like CONCAT('%',#{ruleName,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+	<select id="queryICMPtotal" parameterType="Map" resultType="Integer">
+		select count(*) from hzdy_whitelistrule_icmp
+		<if test="ruleName !=null and ruleName != ''">
+			where rule_name like CONCAT('%',#{ruleName,jdbcType=VARCHAR},'%')
+		</if>
+	</select>
+	
+	<select id="checkICMPRuleDuplication" parameterType="com.hzdy.entity.WhitelistRuleICMP" resultType="com.hzdy.entity.WhitelistRuleICMP">
+		select * from hzdy_whitelistrule_icmp where rule_name = #{ruleName} and whitelistrule_icmp_id != #{whitelistRuleICMPId}
+	</select>
+	
+	<select id="queryICMPwhitelistById" parameterType="Integer" resultType="com.hzdy.entity.WhitelistRuleICMP">
+		select * from hzdy_whitelistrule_icmp where whitelistrule_icmp_id = #{param}
+	</select>
+	
+	<insert id="insertICMPwhitelist" parameterType="com.hzdy.entity.WhitelistRuleICMP" useGeneratedKeys="true" keyProperty="whitelistrule_icmp_id">
+		insert into hzdy_whitelistrule_icmp (rule_name,origin_ip,goal_ip,origin_ip_mac,goal_ip_mac)
+		values (#{ruleName},#{originIP},#{goalIP},#{originIPmac},#{goalIPmac})
+	</insert>
+	
+	<delete id="deleteICMPwhitelist" parameterType="Integer">
+		delete from hzdy_whitelistrule_icmp where whitelistrule_icmp_id = #{param}
+	</delete>
+	
+	<update id="updateICMPwhitelist" parameterType="com.hzdy.entity.WhitelistRuleICMP">
+		update hzdy_whitelistrule_icmp set rule_name = #{ruleName}, origin_ip = #{originIP}, goal_ip = #{goalIP}, origin_ip_mac = #{originIPmac}, goal_ip_mac = #{goalIPmac}
+		where whitelistrule_icmp_id = #{whitelistRuleICMPId}
+	</update>
+	
+	<resultMap type="com.hzdy.entity.WhitelistRuleTCP" id="tcpmap">
+		<id property="whitelistRuleTCPId" column="whitelistrule_tcp_id"/>
+		<result property="ruleName" column="rule_name"/>
+		<result property="originIP" column="origin_ip"/>
+		<result property="goalIP" column="goal_ip"/>
+		<result property="originIPmac" column="origin_ip_mac"/>
+		<result property="goalIPmac" column="goal_ip_mac"/>
+	</resultMap>
+
+	<select id="queryTCPwhitelist" parameterType="Map" resultMap="tcpmap">
+		select * from hzdy_whitelistrule_tcp
+		<if test="ruleName !=null and ruleName != ''">
+			where rule_name like CONCAT('%',#{ruleName,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+	<select id="queryTCPtotal" parameterType="Map" resultType="Integer">
+		select count(*) from hzdy_whitelistrule_tcp
+		<if test="ruleName !=null and ruleName != ''">
+			where rule_name like CONCAT('%',#{ruleName,jdbcType=VARCHAR},'%')
+		</if>
+	</select>
+	
+	<select id="checkTCPRuleDuplication" parameterType="com.hzdy.entity.WhitelistRuleTCP" resultType="com.hzdy.entity.WhitelistRuleTCP">
+		select * from hzdy_whitelistrule_tcp where rule_name = #{ruleName} and whitelistrule_tcp_id != #{whitelistRuleTCPId}
+	</select>
+	
+	<select id="queryTCPwhitelistById" parameterType="Integer" resultType="com.hzdy.entity.WhitelistRuleTCP">
+		select * from hzdy_whitelistrule_tcp where whitelistrule_tcp_id = #{param}
+	</select>
+	
+	<insert id="insertTCPwhitelist" parameterType="com.hzdy.entity.WhitelistRuleTCP" useGeneratedKeys="true" keyProperty="whitelistrule_tcp_id">
+		insert into hzdy_whitelistrule_tcp (rule_name,origin_ip,goal_ip,origin_ip_mac,goal_ip_mac)
+		values (#{ruleName},#{originIP},#{goalIP},#{originIPmac},#{goalIPmac})
+	</insert>
+	
+	<delete id="deleteTCPwhitelist" parameterType="Integer">
+		delete from hzdy_whitelistrule_tcp where whitelistrule_tcp_id = #{param}
+	</delete>
+	
+	<update id="updateTCPwhitelist" parameterType="com.hzdy.entity.WhitelistRuleTCP">
+		update hzdy_whitelistrule_tcp set rule_name = #{ruleName}, origin_ip = #{originIP}, goal_ip = #{goalIP}, origin_ip_mac = #{originIPmac}, goal_ip_mac = #{goalIPmac}
+		where whitelistrule_tcp_id = #{whitelistRuleTCPId}
+	</update>
+	
+	<resultMap type="com.hzdy.entity.WhitelistRuleUDP" id="udpmap">
+		<id property="whitelistRuleUDPId" column="whitelistrule_udp_id"/>
+		<result property="ruleName" column="rule_name"/>
+		<result property="originIP" column="origin_ip"/>
+		<result property="goalIP" column="goal_ip"/>
+		<result property="originIPmac" column="origin_ip_mac"/>
+		<result property="goalIPmac" column="goal_ip_mac"/>
+	</resultMap>
+
+	<select id="queryUDPwhitelist" parameterType="Map" resultMap="udpmap">
+		select * from hzdy_whitelistrule_udp
+		<if test="ruleName !=null and ruleName != ''">
+			where rule_name like CONCAT('%',#{ruleName,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+	<select id="queryUDPtotal" parameterType="Map" resultType="Integer">
+		select count(*) from hzdy_whitelistrule_udp
+		<if test="ruleName !=null and ruleName != ''">
+			where rule_name like CONCAT('%',#{ruleName,jdbcType=VARCHAR},'%')
+		</if>
+	</select>
+	
+	<select id="checkUDPRuleDuplication" parameterType="com.hzdy.entity.WhitelistRuleUDP" resultType="com.hzdy.entity.WhitelistRuleUDP">
+		select * from hzdy_whitelistrule_udp where rule_name = #{ruleName} and whitelistrule_udp_id != #{whitelistRuleUDPId}
+	</select>
+	
+	<select id="queryUDPwhitelistById" parameterType="Integer" resultType="com.hzdy.entity.WhitelistRuleUDP">
+		select * from hzdy_whitelistrule_udp where whitelistrule_udp_id = #{param}
+	</select>
+	
+	<insert id="insertUDPwhitelist" parameterType="com.hzdy.entity.WhitelistRuleUDP" useGeneratedKeys="true" keyProperty="whitelistrule_udp_id">
+		insert into hzdy_whitelistrule_udp (rule_name,origin_ip,goal_ip,origin_ip_mac,goal_ip_mac)
+		values (#{ruleName},#{originIP},#{goalIP},#{originIPmac},#{goalIPmac})
+	</insert>
+	
+	<delete id="deleteUDPwhitelist" parameterType="Integer">
+		delete from hzdy_whitelistrule_udp where whitelistrule_udp_id = #{param}
+	</delete>
+	
+	<update id="updateUDPwhitelist" parameterType="com.hzdy.entity.WhitelistRuleUDP">
+		update hzdy_whitelistrule_udp set rule_name = #{ruleName}, origin_ip = #{originIP}, goal_ip = #{goalIP}, origin_ip_mac = #{originIPmac}, goal_ip_mac = #{goalIPmac}
+		where whitelistrule_udp_id = #{whitelistRuleUDPId}
+	</update>
+
+</mapper>

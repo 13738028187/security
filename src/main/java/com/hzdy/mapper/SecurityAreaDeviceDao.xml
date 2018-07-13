@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hzdy.dao.SecurityAreaDeviceDao">
+	<resultMap type="com.hzdy.entity.SecurityAreaDevice" id="SecurityAreaDeviceMap">
+		<id property="deviceId" column="device_id" />
+		<result property="deviceName" column="device_name" />
+		<result property="deviceNumber" column="device_number" />
+		<result property="deviceIP" column="device_ip" />
+	</resultMap>
+	<resultMap id="getInterfacesEntry" type="com.hzdy.entity.SecurityAreaDevice">
+		<id property="deviceId" column="device_id" />
+		<result property="deviceName" column="device_name" />
+		<result property="deviceNumber" column="device_number" />
+		<result property="deviceIP" column="device_iP" />
+		<collection property="interfaces"
+			ofType="com.hzdy.entity.SecurityAreaInterface">
+			<id property="interfaceId" column="interface_id" />
+			<result property="interfaceName" column="interface_name" />
+			<result property="deviceId" column="device_id" />
+			<result property="securityareaId" column="securityarea_id" />
+		</collection>
+	</resultMap>
+	<select id="getInterfaces" parameterType="int" resultMap="getInterfacesEntry">
+		select * from hzdy_securityarea_device hsd join
+		hzdy_securityarea_interface hsi on hsi.device_id=hsd.device_id where hsd.device_id=#{deviceId};
+	</select>
+	
+	<select id="queryList" parameterType="Map" resultMap="SecurityAreaDeviceMap">
+		select * from hzdy_securityarea_device
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+	<select id="queryTotal" parameterType="Map" resultType="int">
+		select
+		count(*) from hzdy_securityarea_device
+	</select>
+
+	<select id="querySecurityAreaDeviceById" parameterType="int"
+		resultType="com.hzdy.entity.SecurityAreaDevice">
+		select * from hzdy_securityarea_device where device_id =
+		#{deviceId}
+	</select>
+
+	<delete id="delete" parameterType="int">
+		delete from
+		hzdy_securityarea_device
+		where device_id = #{id}
+	</delete>
+
+	<update id="update" parameterType="com.hzdy.entity.SecurityAreaDevice">
+		update
+		hzdy_securityarea_device set
+		device_name=#{deviceName},device_number=#{deviceNumber},device_ip=#{deviceIp}
+		where device_id=#{deviceId}
+	</update>
+
+	<insert id="save" useGeneratedKeys="true" keyProperty="device_id"
+		parameterType="com.hzdy.entity.SecurityAreaDevice">
+		insert into hzdy_securityarea_device
+		(device_name,device_number,device_ip)
+		values
+		(#{deviceName},#{deviceNumber},#{deviceIP})
+	</insert>
+
+	<delete id="deleteDeviceInterfaceByDeviceId" parameterType="Integer">
+		delete from hzdy_securityarea_device where device_id = #{param}
+	</delete>
+
+	<delete id="deleteDeviceInterfaceBySecurityAreaId"
+		parameterType="Integer">
+		delete from hzdy_securityarea_device where
+		securityarea_id = #{param}
+	</delete>
+
+</mapper>

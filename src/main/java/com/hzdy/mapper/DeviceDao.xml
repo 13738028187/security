@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hzdy.dao.DeviceDao">
+
+	<sql id="Base_Column_List">
+		device_id,name,type,net_location,protocol,status,mode,ip_id,online_date
+	</sql>
+
+	<!-- 根据权限ID 获取 权限信息 -->
+	<select id="queryObject" resultMap="devicemap">
+		select
+		<include refid="Base_Column_List" />
+		from hzdy_device where device_id = #{value}
+	</select>
+	<!-- 根据权限ID 获取 权限信息 -->
+	<select id="queryAll" resultMap="devicemap">
+		select
+		<include refid="Base_Column_List" />
+		from hzdy_device;
+	</select>
+
+	<!-- 获取 权限总记录数 -->
+	<select id="queryTotal" resultType="int">
+		select count(*) from
+		hzdy_device;
+	</select>
+
+	<!-- 删除时 只是软删除 -->
+	<update id="delete">
+		update hzdy_device where
+		device_id=#{deviceId}
+	</update>
+
+	<!-- 插入 数据 -->
+	<!-- <insert id="save" parameterType="com.hzdy.discovery.Device" useGeneratedKeys="true" 
+		keyProperty="device_id"> insert into hzdy_device <trim prefix="(" suffix=")" 
+		suffixOverrides=","> <if test="receiveEmail !=null"> receive_email, </if> 
+		</trim> <trim prefix="values (" suffix=")" suffixOverrides=","> <if test="receiveEmail 
+		!= null"> #{receiveEmail,jdbcType=VARCHAR}, </if> </trim> </insert> -->
+	<insert id="save" parameterType="com.hzdy.discovery.Device"
+		useGeneratedKeys="true" keyProperty="device_id">
+		insert into hzdy_device(name,type,net_location,protocol,status)
+		<trim prefix="values(" suffix=")" suffixOverrides=",">
+			<if test="name != null">
+				#{name,jdbcType=VARCHAR},
+			</if>
+			<if test="type != null">
+				#{type,jdbcType=INTEGER},
+			</if>
+			<if test="net_location != null">
+				#{netLocation,jdbcType=VARCHAR},
+			</if>
+			<if test="protocol != null">
+				#{protocol,jdbcType=VARCHAR},
+			</if>
+			<if test="status != null">
+				#{status,jdbcType=INTEGER},
+			</if>
+			<if test="mode != null">
+				#{mode,jdbcType=INTEGER},
+			</if>
+			<if test="status != null">
+				#{ip_id,jdbcType=INTEGER},
+			</if>
+			<if test="ip_id != null">
+				#{status,jdbcType=INTEGER},
+			</if>
+			<if test="online_date != null">
+				#{online_date,jdbcType=INTEGER},
+			</if>
+		</trim>
+	</insert>
+	<!-- 修改数据 -->
+	<update id="update" parameterType="com.hzdy.discovery.Device">
+		update hzdy_device
+		<set>
+			<if test="name != null">
+				#{name,jdbcType=VARCHAR},
+			</if>
+			<if test="type != null">
+				#{type,jdbcType=INTEGER},
+			</if>
+			<if test="net_location != null">
+				#{netLocation,jdbcType=VARCHAR},
+			</if>
+			<if test="protocol != null">
+				#{protocol,jdbcType=VARCHAR},
+			</if>
+			<if test="status != null">
+				#{status,jdbcType=INTEGER},
+			</if>
+			<if test="mode != null">
+				#{mode,jdbcType=INTEGER},
+			</if>
+			<if test="status != null">
+				#{ip_id,jdbcType=INTEGER},
+			</if>
+			<if test="ip_id != null">
+				#{status,jdbcType=INTEGER},
+			</if>
+			<if test="online_date != null">
+				#{online_date,jdbcType=INTEGER},
+			</if>
+		</set>
+		where device_id = #{deviceId,jdbcType=INTEGER}
+	</update>
+	<resultMap id="devicemap" type="com.hzdy.discovery.Device">
+		<id property="deviceId" column="device_id" />
+		<result property="name" column="name" />
+		<result property="type" column="type" />
+		<result property="netLocation" column="net_location" />
+		<result property="protocol" column="protocol" />
+		<result property="status" column="status" />
+		<result property="mode" column="mode" />
+		<result property="ipId" column="ip_id" />
+		<result property="onlineDate" column="online_date" />
+	</resultMap>
+</mapper>

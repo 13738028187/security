@@ -1,0 +1,124 @@
+{
+			"topology_id" : null,
+			"protocol" : "OLSR",
+			"nodes" : [ {
+				"ip" : "10.0.0.1",
+				"label" : "10.0.0.1",
+				"localAddresses" : null,
+				"linkCount" : 2,
+				"index" : 0,
+				"weight" : 2,
+				"x" : 378.2189567123451,
+				"y" : 164.38542701144982,
+				"px" : 378.2185196574301,
+				"py" : 164.3846599129946,
+				"fixed" : 0
+			}, {
+				"ip" : "10.0.0.7",
+				"label" : "10.0.0.7",
+				"localAddresses" : null,
+				"linkCount" : 1,
+				"index" : 1,
+				"weight" : 1,
+				"x" : 462.29849154680596,
+				"y" : 42.101647832217566,
+				"px" : 462.29350086233615,
+				"py" : 42.10428815122728
+			}, {
+				"ip" : "10.0.0.9",
+				"label" : "10.0.0.9",
+				"localAddresses" : null,
+				"linkCount" : 1,
+				"index" : 2,
+				"weight" : 1,
+				"x" : 364.33477636259033,
+				"y" : 31.247554203775444,
+				"px" : 364.33709595483174,
+				"py" : 31.25169830457327
+			}, {
+				"ip" : "127.0.0.1",
+				"label" : "127.0.0.1",
+				"localAddresses" : null,
+				"linkCount" : 0,
+				"index" : 3,
+				"weight" : 0,
+				"x" : 128.63115865618065,
+				"y" : 211.40520059634045,
+				"px" : 128.63474863419876,
+				"py" : 211.40425480987548
+			}, {
+				"ip" : "172.17.0.1",
+				"label" : "172.17.0.1",
+				"localAddresses" : null,
+				"linkCount" : 0,
+				"index" : 4,
+				"weight" : 0,
+				"x" : 370.1502076798716,
+				"y" : 268.8668934950871,
+				"px" : 370.14971805839593,
+				"py" : 268.8617309799678
+			} ],
+			"metric" : "ETX",
+			"author" : "admin",
+			"router_ip" : null,
+			"lable" : "NinuxRoma",
+			"links" : [ {
+				"cost" : 1,
+				"cost_text" : null,
+				"source" : {
+					"ip" : "10.0.0.7",
+					"label" : "10.0.0.7",
+					"localAddresses" : null,
+					"linkCount" : 1,
+					"index" : 1,
+					"weight" : 1,
+					"x" : 462.29849154680596,
+					"y" : 42.101647832217566,
+					"px" : 462.29350086233615,
+					"py" : 42.10428815122728
+				},
+				"target" : {
+					"ip" : "10.0.0.1",
+					"label" : "10.0.0.1",
+					"localAddresses" : null,
+					"linkCount" : 2,
+					"index" : 0,
+					"weight" : 2,
+					"x" : 378.2189567123451,
+					"y" : 164.38542701144982,
+					"px" : 378.2185196574301,
+					"py" : 164.3846599129946,
+					"fixed" : 0
+				}
+			}, {
+				"cost" : 1,
+				"cost_text" : null,
+				"source" : {
+					"ip" : "10.0.0.9",
+					"label" : "10.0.0.9",
+					"localAddresses" : null,
+					"linkCount" : 1,
+					"index" : 2,
+					"weight" : 1,
+					"x" : 364.33477636259033,
+					"y" : 31.247554203775444,
+					"px" : 364.33709595483174,
+					"py" : 31.25169830457327
+				},
+				"target" : {
+					"ip" : "10.0.0.1",
+					"label" : "10.0.0.1",
+					"localAddresses" : null,
+					"linkCount" : 2,
+					"index" : 0,
+					"weight" : 2,
+					"x" : 378.2189567123451,
+					"y" : 164.38542701144982,
+					"px" : 378.2185196574301,
+					"py" : 164.3846599129946,
+					"fixed" : 0
+				}
+			} ],
+			"type" : "NetworkGraph",
+			"revision" : "0.6.6.2"
+}

@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>基线配置</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link rel="stylesheet" href="../resources/sys/statics/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../resources/sys/statics/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../resources/sys/statics/plugins/jqgrid/ui.jqgrid-bootstrap.css">
+    <link rel="stylesheet" href="../resources/sys/statics/plugins/ztree/css/metroStyle/metroStyle.css">
+    <link rel="stylesheet" href="../resources/sys/statics/css/main.css">
+    <script src="../resources/sys/statics/libs/jquery.min.js"></script>
+    <script src="../resources/sys/statics/plugins/layer/layer.js"></script>
+    <script src="../resources/sys/statics/libs/bootstrap.min.js"></script>
+    <script src="../resources/sys/statics/libs/vue.min.js"></script>
+    <script src="../resources/sys/statics/plugins/jqgrid/grid.locale-cn.js"></script>
+    <script src="../resources/sys/statics/plugins/jqgrid/jquery.jqGrid.min.js"></script>
+    <script src="../resources/sys/statics/plugins/ztree/jquery.ztree.all.min.js"></script>
+    <script src="../resources/sys/statics/plugins/My97DatePicker/WdatePicker.js"></script>
+    <script src="../resources/sys/js/common.js"></script>
+</head>
+<body>
+<div id="rrapp">
+    <div class="grid-btn">
+        <div class="form-inline" role="form">
+
+            <button id="addInterceptedIP" class="btn btn-info btn-2x"
+                    @click="openAddDialog">
+                <span class="glyphicon glyphicon-plus"></span> 新增
+            </button>
+            <button id="deleteInterceptedIP" class="btn btn-danger btn-2x"
+                    @click="deleteStrategies">
+                <span class="glyphicon glyphicon-trash"></span> 删除
+            </button>
+
+            <div class="form-group">
+                <label>基线名称：</label> <input type="text" class="form-control"
+                                            id="name" maxlength="10" placeholder="不输入默认搜索所有">
+            </div>
+
+            <a href="javascript:;" class="btn btn-info btn-2x"
+               @click="searchStrategy"> <span
+                    class="glyphicon glyphicon-search"></span> 搜索
+            </a>
+
+        </div>
+    </div>
+    <table id="jqGrid"></table>
+    <div id="jqGridPager"></div>
+
+    <div class="modal fade" id="addStrategy" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">{{title}}</h4>
+                </div>
+                <div class="modal-body">
+
+                    <p>
+                        <label>策略名称：</label>
+                        <input type="text" size="30" maxlength="30"
+                               v-model="name" class="form-control treeBox">
+                    </p>
+
+                    <p>
+                        <label>类型：</label>
+                        <select name="sel" id="sel"
+                                onchange="vm.switchStrategyType()" class="form-control">
+                            <option selected="selected" value="none">请选择</option>
+                            <option value="0">端口策略</option>
+                            <option value="1">IP策略</option>
+                        </select>
+                    </p>
+
+                    <p>
+                        <label>指定IP：</label>
+                        <input id="ips" type="text" v-model="ips" size="30"
+                               maxlength="30" class="form-control treeBox">
+                    </p>
+
+                    <div id="portPolicy" style="display: none;">
+                        <p>
+                            <label>端口：</label><input id="ports" type="text"
+                                                     v-model="ports" size="30" maxlength="18"
+                                                     class="form-control treeBox">
+                        </p>
+
+                        <p>
+                            <label>状态：</label>
+                            <select id="portStatus" class="form-control" v-model="portStatus">
+                                <option value="0" selected="selected">关闭</option>
+                                <option value="1">开放</option>
+                            </select>
+                        </p>
+                    </div>
+
+                    <div id="ipPolicy" style="display: none">
+                        <p>
+                            <label>状态：</label>
+                            <select id="ipStatus" class="form-control" v-model="ipStatus">
+                                <option value="0" selected="selected">拦截</option>
+                                <option value="1">放行</option>
+                            </select>
+                        </p>
+                    </div>
+                </div>
+
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" @click="reset">重置</button>
+
+                    <button type="button" class="btn btn-default" @click="addStrategy">确定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modifyStrategy" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">{{title}}</h4>
+                </div>
+                <div class="modal-body">
+
+                    <p>
+                        <label>策略名称：</label><input type="text" size="30" maxlength="30"
+                                                   v-model="name" class="form-control treeBox">
+                    </p>
+
+                    <p>
+                        <label>类&nbsp;&nbsp;型：</label> <select name="sel2" id="sel2"
+                                                               onchange="vm.switchStrategyType2()" class="form-control">
+                        <option selected="selected" value="none">请选择</option>
+                        <option value="0">端口策略</option>
+                        <option value="1">IP策略</option>
+                    </select>
+                    </p>
+
+                    <p>
+                        <label>指定IP：</label>
+                        <input id="ips" type="text" v-model="ips" size="30"
+                               maxlength="30" class="form-control treeBox">
+                    </p>
+
+                    <div id="portPolicy2" style="display: none;">
+                        <p>
+                            <label>端口：</label><input id="ports" type="text"
+                                                     v-model="ports" size="30" maxlength="18"
+                                                     class="form-control treeBox">
+                        </p>
+
+                        <p>
+                            <label>状态：</label>
+                            <select id="portStatus" class="form-control" v-model="portStatus">
+                                <option value="0" selected="selected">关闭</option>
+                                <option value="1">开放</option>
+                            </select>
+                        </p>
+                    </div>
+
+                    <div id="ipPolicy2" style="display: none">
+                        <p>
+                            <label>状态：</label>
+                            <select id="ipStatus" class="form-control" v-model="ipStatus">
+                                <option value="0" selected="selected">拦截</option>
+                                <option value="1">放行</option>
+                            </select>
+                        </p>
+                    </div>
+                </div>
+
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" @click="reset">重置</button>
+
+                    <button type="button" class="btn btn-default"
+                            @click="modifyStrategy">确定
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="showDetails" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">{{title}}</h4>
+                </div>
+                <div class="modal-body">
+
+                    <p>
+                        <label>策略名称：</label><input type="text" size="30" maxlength="30"
+                                                   disabled="disabled" v-model="name" class="form-control treeBox">
+                    </p>
+
+                    <p>
+                        <label>类型：</label> <select
+                            name="sel3" id="sel3" disabled="disabled" class="form-control">
+                        <option value="0">端口策略</option>
+                        <option value="1">IP策略</option>
+                    </select>
+                    </p>
+
+                    <p>
+                        <label>指定IP：</label>
+                        <input id="ips" type="text" v-model="ips" size="30"
+                               maxlength="30" class="form-control treeBox" disabled="disabled">
+                    </p>
+
+                    <div id="portPolicy3" style="display: none;">
+                        <p>
+                            <label>端口：</label><input id="ports" type="text" disabled="disabled"
+                                                     v-model="ports" size="30" maxlength="18"
+                                                     class="form-control treeBox">
+                        </p>
+
+                        <p>
+                            <label>状态：</label>
+                            <select id="portStatus" class="form-control" v-model="portStatus" disabled="disabled">
+                                <option value="0" selected="selected">关闭</option>
+                                <option value="1">开放</option>
+                            </select>
+                        </p>
+                    </div>
+
+                    <div id="ipPolicy3" style="display: none">
+                        <p>
+                            <label>状态：</label>
+                            <select id="ipStatus" class="form-control" v-model="ipStatus" disabled="disabled">
+                                <option value="0" selected="selected">拦截</option>
+                                <option value="1">放行</option>
+                            </select>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="modal-footer"></div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="strategyIssued" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">策略下发</h4>
+                </div>
+                <div class="modal-body">
+
+                    <p>
+                        <label>设备类型：</label> <select name="sel4" id="sel4"
+                                                     onchange="vm.switchDeviceType()" class="form-control treeBox">
+                        <option selected="selected" value="none">请选择</option>
+                        <option value="0">CentOS</option>
+                        <option value="1">Ubuntu</option>
+                    </select>
+                    </p>
+                    <p>
+                        <label for="">设备名称：</label>
+
+                    <div id="CentOS" style="display: none" class="checkbox"></div>
+
+                    <div id="Ubuntu" style="display: none" class="checkbox"></div>
+                    </p>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default"
+                            onclick="vm.strategyIssued()">确定
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="../resources/sys/js/sys/baseLine.js"></script>
+</body>
+</html>

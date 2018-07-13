@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+          http://www.springframework.org/schema/beans 
+          http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+	<!-- 引入其他配置文件 -->
+	<import resource="classpath:spring-config-mvc.xml" />
+
+	<import resource="classpath:spring-config-cache.xml" />
+
+	<import resource="classpath:spring-test-config-jdbc.xml" />
+
+	<import resource="classpath:spring-config-shiro.xml" />
+
+	<import resource="classpath:spring-config-task.xml" />
+
+	<import resource="classpath:spring-config-redis.xml" />
+
+	<import resource="classpath:spring-config-websocket.xml" />
+
+	<import resource="classpath:spring-test-config-activemq.xml" />
+
+	<import resource="classpath:spring-test-config-mongodb.xml" />
+</beans>
